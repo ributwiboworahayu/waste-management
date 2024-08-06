@@ -20,31 +20,40 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
-                <form id="unitsForm" action="{{ route('waste.units.store') }}" method="POST">
+                <form id="unitsForm" action="{{ route('waste.units.store') }}" method="POST" class="row g-3">
                     @csrf
                     <div id="unitsContainer">
                         @if (old('units'))
                             @foreach (old('units') as $index => $unit)
-                                <div class="unit-group mb-3" data-index="{{ $index }}">
-                                    <label for="name_{{ $index }}" class="form-label">Nama Satuan</label>
-                                    <input type="text" class="form-control" id="name_{{ $index }}"
-                                           name="units[{{ $index }}][name]" value="{{ $unit['name'] }}" required>
-                                    <label for="description_{{ $index }}" class="form-label">Deskripsi</label>
-                                    <textarea class="form-control" id="description_{{ $index }}"
-                                              name="units[{{ $index }}][description]"
-                                              rows="3">{{ $unit['description'] }}</textarea>
-                                    <hr>
+                                <div class="unit-group row mb-3" data-index="{{ $index }}">
+                                    <div class="col-md-4">
+                                        <label for="name_{{ $index }}" class="form-label">Nama Satuan</label>
+                                        <input type="text" class="form-control" id="name_{{ $index }}"
+                                               name="units[{{ $index }}][name]" value="{{ $unit['name'] }}" required>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <label for="description_{{ $index }}" class="form-label">Deskripsi</label>
+                                        <input type="text" class="form-control" id="description_{{ $index }}"
+                                               name="units[{{ $index }}][description]"
+                                               value="{{ $unit['description'] }}">
+                                    </div>
                                 </div>
+                                <hr>
                             @endforeach
                         @else
-                            <div class="unit-group mb-3" data-index="0">
-                                <label for="name_0" class="form-label">Nama Satuan</label>
-                                <input type="text" class="form-control" id="name_0" name="units[0][name]" required>
-                                <label for="description_0" class="form-label">Deskripsi</label>
-                                <textarea class="form-control" id="description_0" name="units[0][description]"
-                                          rows="3"></textarea>
-                                <hr>
+                            <div class="unit-group row mb-3" data-index="0">
+                                <div class="col-md-4">
+                                    <label for="name_0" class="form-label">Nama Satuan</label>
+                                    <input type="text" class="form-control" id="name_0" name="units[0][name]"
+                                           required>
+                                </div>
+                                <div class="col-md-8">
+                                    <label for="description_0" class="form-label">Deskripsi</label>
+                                    <input type="text" class="form-control" id="description_0"
+                                           name="units[0][description]">
+                                </div>
                             </div>
+                            <hr>
                         @endif
                     </div>
                     <div class="d-flex justify-content-between mb-3">
@@ -70,29 +79,40 @@
 @push('custom-js')
     <script>
         $(document).ready(function () {
-            let unitIndex = $('#unitsContainer .unit-group').length;
+            let unitIndex = $('#unitsContainer .unit-group').length
 
             $('#addUnitButton').click(function () {
                 const newUnitGroup = `
-                    <div class="unit-group mb-3" data-index="${unitIndex}">
-                        <label for="name_${unitIndex}" class="form-label">Nama Satuan</label>
-                        <input type="text" class="form-control" id="name_${unitIndex}" name="units[${unitIndex}][name]" required>
-                        <label for="description_${unitIndex}" class="form-label">Deskripsi</label>
-                        <textarea class="form-control" id="description_${unitIndex}" name="units[${unitIndex}][description]" rows="3"></textarea>
-                        <hr>
+                    <div class="unit-group row mb-3" data-index="${unitIndex}">
+                        <div class="col-md-4">
+                            <label for="name_${unitIndex}" class="form-label">Nama Satuan</label>
+                            <input type="text" class="form-control" id="name_${unitIndex}" name="units[${unitIndex}][name]" required>
+                        </div>
+                        <div class="col-md-8">
+                            <label for="description_${unitIndex}" class="form-label">Deskripsi</label>
+                            <input type="text" class="form-control" id="description_${unitIndex}" name="units[${unitIndex}][description]" required>
+                        </div>
                     </div>
-                `;
+                    <hr>
+                `
 
-                $('#unitsContainer').append(newUnitGroup);
-                unitIndex++;
-            });
+                $('#unitsContainer').append(newUnitGroup)
+                $('#removeUnitButton').prop('disabled', false).removeClass('disabled')
+                unitIndex++
+            })
 
             $('#removeUnitButton').click(function () {
                 if ($('#unitsContainer .unit-group').length > 1) {
-                    $('#unitsContainer .unit-group').last().remove();
-                    unitIndex--;
+                    $('#unitsContainer .unit-group').last().remove()
+                    $('#unitsContainer hr').last().remove()
+                    unitIndex--
                 }
-            });
-        });
+            })
+
+            if ($('#unitsContainer .unit-group').length === 1) {
+                $('#removeUnitButton').prop('disabled', true).addClass('disabled')
+            }
+
+        })
     </script>
 @endpush

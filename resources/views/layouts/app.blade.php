@@ -17,7 +17,9 @@
     <link href="{{ asset('assets/css/bootstrap-icons.css') }}" rel="stylesheet">
     <!-- SweetAlert2 -->
     <link rel="stylesheet" href="{{ asset('assets/css/sweetalert2.min.css') }}">
-
+    <!-- Select2 -->
+    <link href="{{ asset('assets/css/select2.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('assets/css/select2-bootstrap-5-theme.min.css') }}"/>
 
     @stack('custom-css') <!-- Custom CSS Stack -->
     <style>
@@ -75,7 +77,7 @@
                             </a>
                             <hr class="dropdown-divider">
                             <a class="dropdown-item" href="{{ route('logout') }}"
-                               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                               onclick="preventDefault(); document.getElementById('logout-form').submit();">
                                 Logout
                             </a>
 
@@ -105,6 +107,24 @@
 <script src="{{ asset('assets/js/datatables.min.js') }}"></script>
 <!-- SweetAlert2 -->
 <script src="{{ asset('assets/js/sweetalert2.all.min.js') }}"></script>
+<!-- Select2 -->
+<script src="{{ asset('assets/js/select2.min.js') }}"></script>
+
+<script>
+    $(document).ready(function () {
+        // Initialize DataTables
+        $('.dataTable').DataTable({
+            responsive: true
+        })
+
+        // Initialize Select2
+        $('.select2').select2({
+            theme: 'bootstrap-5',
+            placeholder: 'Pilih Satuan',
+            width: '100%' // Make sure the Select2 dropdown is full width
+        })
+    })
+</script>
 
 @stack('custom-js') <!-- Custom JS Stack -->
 </body>

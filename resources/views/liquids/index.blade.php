@@ -24,45 +24,64 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
-                <table id="liquidTable" class="table table-bordered">
-                    <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Kode</th>
-                        <th>Nama</th>
-                        <th>Satuan</th>
-                        <th>Kuantitas</th>
-                        <th>Deskripsi</th>
-                        <th>Aksi</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <!-- Data rows will go here -->
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table id="liquidTable" class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Kode</th>
+                            <th>Nama</th>
+                            <th>Satuan</th>
+                            <th>Kuantitas</th>
+                            <th>Deskripsi</th>
+                            <th>Aksi</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!-- Data rows will go here -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Edit Modal -->
     <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <form action="" method="POST">
                     @csrf
                     @method('PUT')
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editModalLabel">Edit Satuan</h5>
+                        <h5 class="modal-title" id="editModalLabel">Edit</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body" id="editModalBody">
                         <div class="mb-3">
-                            <label for="name" class="form-label">Nama Satuan</label>
-                            <input type="text" class="form-control" name="name" required>
+                            <label for="editCode" class="form-label">Kode</label>
+                            <input type="text" class="form-control" name="code" id="editCode" required>
                         </div>
                         <div class="mb-3">
-                            <label for="description" class="form-label">Deskripsi</label>
-                            <textarea class="form-control" name="description" rows="3"></textarea>
+                            <label for="editName" class="form-label">Nama</label>
+                            <input type="text" class="form-control" name="name" id="editName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editUnit" class="form-label">Satuan</label>
+                            <select name="unit" id="editUnit" class="form-select" required>
+                                <option value="">Pilih Satuan</option>
+                                @foreach ($units as $unit)
+                                    <option value="{{ $unit->id }}">{{ $unit->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editQuantity" class="form-label">Kuantitas</label>
+                            <input type="number" class="form-control" name="quantity" id="editQuantity" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editDescription" class="form-label">Deskripsi</label>
+                            <textarea class="form-control" name="description" id="editDescription" rows="3"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -78,7 +97,8 @@
 @push('custom-js')
     <script>
         $(document).ready(function () {
-            $('#liquidTable').DataTable({
+            const liquidTable = $('#liquidTable')
+            liquidTable.DataTable({
                 processing: true,
                 serverSide: true,
                 language: {
@@ -98,7 +118,7 @@
                     {data: 'quantity', name: 'quantity'},
                     {data: 'description', name: 'description'},
                     {
-                        data: 'action', name: 'action', orderable: false, searchable: false,
+                        data: 'actions', name: 'actions', orderable: false, searchable: false,
                         render: function (data) {
                             let buttons = ''
                             $.each(data, function (key, value) {
@@ -112,7 +132,7 @@
                 ]
             })
 
-            $('#unitsTable').on('click', '.btn-delete', function (e) {
+            liquidTable.on('click', '.btn-delete', function (e) {
                 e.preventDefault()
                 const url = $(this).attr('href')
                 const token = '{{ csrf_token() }}'
@@ -157,18 +177,32 @@
             })
 
             // edit show modal
-            $('#unitsTable').on('click', '.btn-edit', function (e) {
+            liquidTable.on('click', '.btn-edit', function (e) {
                 e.preventDefault()
 
                 // show modal
                 $('#editModal').modal('show')
                 // show the data from table
-                const data = $('#unitsTable').DataTable().row($(this).parents('tr')).data()
+                const data = $('#liquidTable').DataTable().row($(this).parents('tr')).data()
                 const url = $(this).attr('href')
 
                 $('#editModal form').attr('action', url)
-                $('#editModal form input[name="name"]').val(data.name).attr('readonly', true)
-                $('#editModal form textarea[name="description"]').val(data.description)
+                $('#editCode').val(data.code)
+                $('#editName').val(data.name)
+                $('#editQuantity').val(data.quantity)
+                $('#editDescription').val(data.description)
+
+                // Set selected unit in modal
+                const unitSelect = $('#editUnit')
+                const unitOptions = unitSelect.find('option')
+
+                // Find the option with text matching the data.unit
+                unitOptions.each(function () {
+                    if ($(this).text() === data.unit) {
+                        unitSelect.val($(this).val()).trigger('change')
+                        return false // Exit the loop once the match is found
+                    }
+                })
             })
         })
     </script>

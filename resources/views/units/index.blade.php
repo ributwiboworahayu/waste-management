@@ -43,7 +43,7 @@
 
     <!-- Edit Modal -->
     <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <form action="" method="POST">
                     @csrf
@@ -75,7 +75,8 @@
 @push('custom-js')
     <script>
         $(document).ready(function () {
-            $('#unitsTable').DataTable({
+            const unitsTable = $('#unitsTable')
+            unitsTable.DataTable({
                 processing: true,
                 serverSide: true,
                 language: {
@@ -106,7 +107,7 @@
                 ]
             })
 
-            $('#unitsTable').on('click', '.btn-delete', function (e) {
+            unitsTable.on('click', '.btn-delete', function (e) {
                 e.preventDefault()
                 const url = $(this).attr('href')
                 const token = '{{ csrf_token() }}'
@@ -151,7 +152,7 @@
             })
 
             // edit show modal
-            $('#unitsTable').on('click', '.btn-edit', function (e) {
+            unitsTable.on('click', '.btn-edit', function (e) {
                 e.preventDefault()
 
                 // show modal

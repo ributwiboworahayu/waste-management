@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUnitRequest;
+use App\Http\Requests\UpdateUnitRequest;
 use App\Services\UnitService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -29,7 +30,11 @@ class UnitController extends Controller
         return view('units.create');
     }
 
-    public function store(StoreUnitRequest $request)
+    /**
+     * @param StoreUnitRequest $request
+     * @return RedirectResponse
+     */
+    public function store(StoreUnitRequest $request): RedirectResponse
     {
         $result = $this->service->store($request);
         if ($result['status']) {
@@ -40,10 +45,10 @@ class UnitController extends Controller
 
     /**
      * @param $id
-     * @param StoreUnitRequest $request
+     * @param UpdateUnitRequest $request
      * @return RedirectResponse
      */
-    public function update($id, StoreUnitRequest $request): RedirectResponse
+    public function update($id, UpdateUnitRequest $request): RedirectResponse
     {
         $result = $this->service->update($id, $request->toArray());
         if (!$result) {
@@ -52,7 +57,7 @@ class UnitController extends Controller
         return redirect()->route('waste.units')->with('success', 'Berhasil mengubah data unit');
     }
 
-    public function delete($id)
+    public function delete($id): RedirectResponse
     {
         $result = $this->service->delete($id);
         if (!$result) {
@@ -69,7 +74,7 @@ class UnitController extends Controller
     {
         $result = $this->service->datatables($request);
         if ($result['ajax']) {
-            return response()->json($this->service->datatables($request));
+            return response()->json($result);
         }
         return redirect()->route('units.index');
     }
