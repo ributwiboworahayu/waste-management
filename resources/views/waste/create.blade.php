@@ -6,7 +6,7 @@
     <div class="container mt-3">
         <div class="card">
             <div class="card-header">
-                Tambah Cairan
+                Tambah transaksi
             </div>
             <div class="card-body">
                 @if($error ?? false)
@@ -26,88 +26,38 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
-                <form id="liquidsForm" action="{{ route('waste.liquid.store') }}" method="POST">
+                <form id="liquidsForm" action="{{ route('waste.store') }}" method="POST">
                     @csrf
-                    <div id="liquidsContainer">
-                        @if (old('liquids'))
-                            @foreach (old('liquids') as $index => $liquid)
-                                <div class="liquid-group row mb-3" data-index="{{ $index }}">
-                                    <div class="col-auto">
-                                        <label for="codeName_{{ $index }}" class="form-label">Kode</label>
-                                        <input type="text" class="form-control" id="codeName_{{ $index }}"
-                                               name="liquids[{{ $index }}][codeName]" value="{{ $liquid['codeName'] }}"
-                                               placeholder="K01.." required>
-                                    </div>
-                                    <div class="col-auto">
-                                        <label for="name_{{ $index }}" class="form-label">Nama</label>
-                                        <input type="text" class="form-control" id="name_{{ $index }}"
-                                               name="liquids[{{ $index }}][name]" value="{{ $liquid['name'] }}"
-                                               placeholder="Nama" required>
-                                    </div>
-                                    <div class="col-auto">
-                                        <label for="unitName_{{ $index }}" class="form-label">Satuan</label>
-                                        <select class="form-select select2" id="unitName_{{ $index }}"
-                                                name="liquids[{{ $index }}][unitName]" data-placeholder="Pilih Satuan"
-                                                required>
-                                            <option></option>
-                                            @foreach ($units as $unit)
-                                                <option value="{{ $unit->id }}"
-                                                    {{ $unit->id == $liquid['unitName'] ? 'selected' : '' }}>
-                                                    {{ $unit->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label for="description_{{ $index }}" class="form-label">Deskripsi</label>
-                                        <input type="text" class="form-control" id="description_{{ $index }}"
-                                               name="liquids[{{ $index }}][description]"
-                                               value="{{ $liquid['description'] }}"
-                                               placeholder="Deskripsi">
-                                    </div>
-                                </div>
-                            @endforeach
-                        @else
-                            <div class="liquid-group row mb-3">
-                                <div class="col-auto">
-                                    <label for="codeName_0" class="form-label">Kode</label>
-                                    <input type="text" class="form-control" id="codeName_0" name="liquids[0][codeName]"
-                                           placeholder="K01.." required>
-                                </div>
-                                <div class="col-auto">
-                                    <label for="name_0" class="form-label">Nama</label>
-                                    <input type="text" class="form-control" id="name_0" name="liquids[0][name]"
-                                           placeholder="Nama"
-                                           required>
-                                </div>
-                                <div class="col-auto">
-                                    <label for="unitName_0" class="form-label">Satuan</label>
-                                    <select class="form-select select2" id="unitName_0" name="liquids[0][unitName]"
-                                            data-placeholder="Pilih Satuan" required>
-                                        <option></option>
-                                        @foreach ($units as $unit)
-                                            <option value="{{ $unit->id }}">{{ $unit->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="description_0" class="form-label">Deskripsi</label>
-                                    <input type="text" class="form-control" id="description_0"
-                                           name="liquids[0][description]"
-                                           placeholder="Deskripsi">
-                                </div>
-                            </div>
-                        @endif
+                    <div class="row g-3">
+                        <div class="col-md-2">
+                            <label for="liquid_waste" class="col-form-label">Cairan limbah</label>
+                        </div>
+                        <div class="col-auto">
+                            <select class="form-select select2" id="liquid_waste" name="liquid_waste"
+                                    data-placeholder="Pilih Cairan Limbah" required>
+                                <option></option>
+                            </select>
+                        </div>
+                        <div class="col-auto">
+                            <label for="unit" class="col-form-label">Satuan</label>
+                        </div>
+                        <div class="col-auto">
+                            <select class="form-select select2" id="unit" name="unit"
+                                    data-placeholder="Pilih Satuan" required>
+                                <option></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3 row mt-2">
+                        <div class="col-md-2">
+                            <label for="description" class="form-label">Deskripsi</label>
+                        </div>
+                        <div class="col-md-6">
+                            <textarea class="form-control" id="description" rows="3" name="description"
+                                      placeholder="Deskripsi" required></textarea>
+                        </div>
                     </div>
                     <div class="d-flex justify-content-between mb-3">
-                        <div>
-                            <button type="button" id="addLiquidButton" class="btn btn-secondary">
-                                <i class="bi bi-plus"></i>
-                            </button>
-                            <button type="button" id="removeLiquidButton" class="btn mx-1 btn-danger" disabled>
-                                <i class="bi bi-dash"></i>
-                            </button>
-                        </div>
                         <div>
                             <button type="submit" class="btn btn-primary mx-1">Simpan</button>
                             <a href="{{ route('waste.index') }}" class="btn btn-secondary">Kembali</a>
