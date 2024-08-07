@@ -24,7 +24,7 @@ return [
     | Default: true
     |
     */
-    'enabled' => env('MINIFY_ENABLED', true),
+    'enabled' => config('app.debug') ? false : env('MINIFY_ENABLED', true),
 
     /*
     |--------------------------------------------------------------------------

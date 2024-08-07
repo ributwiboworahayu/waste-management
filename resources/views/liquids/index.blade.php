@@ -12,11 +12,13 @@
                 @if($error)
                     <div class="alert alert-warning alert-dismissible fade show" role="alert">
                         <li>{!! $error !!}</li>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <button type="button" id="addLiquidButton" class="btn-close" data-bs-dismiss="alert"
+                                aria-label="Close"></button>
                     </div>
                 @else
                     <div class="d-flex justify-content-between mb-3">
-                        <a href="{{ route('waste.liquid.create') }}" class="btn btn-primary">Tambah</a>
+                        <a href="{{ route('waste.liquid.create') }}" id="addLiquidButton"
+                           class="btn btn-primary">Tambah</a>
                     </div>
                 @endif
                 @if (session('success'))
@@ -139,7 +141,28 @@
                             return buttons
                         }
                     }
-                ]
+                ],
+                initComplete: function () {
+                    // get page from url
+                    const urlParams = new URLSearchParams(window.location.search)
+                    const page = urlParams.get('page')
+                    if (page) {
+                        liquidTable.DataTable().page(page - 1).draw('page')
+
+                        // set button add + page
+                        $('#addLiquidButton').attr('href', '{{ route('waste.liquid.create') }}?page=' + page)
+                    }
+                }
+            })
+
+            // on click first, previous, next, and last page
+            // when clicked, change the url
+            liquidTable.on('page.dt', function () {
+                const pageInfo = liquidTable.DataTable().page.info()
+                window.history.replaceState(null, null, `?page=${pageInfo.page + 1}`)
+
+                // set button add + page
+                $('#addLiquidButton').attr('href', '{{ route('waste.liquid.create') }}?page=' + (pageInfo.page + 1))
             })
 
             liquidTable.on('click', '.btn-delete', function (e) {
@@ -171,7 +194,8 @@
                                     text: response.message,
                                     icon: 'success'
                                 }).then(() => {
-                                    $('#liquidTable').DataTable().ajax.reload()
+                                    const page = liquidTable.DataTable().page.info().page
+                                    $('#liquidTable').DataTable().ajax.reload().page(page).draw('page')
                                 })
                             },
                             error: function (xhr) {
@@ -196,7 +220,8 @@
                 const data = $('#liquidTable').DataTable().row($(this).parents('tr')).data()
                 const url = $(this).attr('href')
 
-                $('#editModal form').attr('action', url)
+                const page = liquidTable.DataTable().page.info().page + 1
+                $('#editModal form').attr('action', `${url}?page=${page}`)
                 $('#editCode').val(data.code.toUpperCase()).attr('readonly', true)
                 $('#editName').val(data.name)
                 $('#editQuantity').val(data.quantity)

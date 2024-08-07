@@ -31,11 +31,12 @@ class LiquidController extends Controller
         return view('liquids.index', compact('units'))->with('error', $error);
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $units = $this->liquidService->getUnits();
         $error = self::unitEmpty($units);
-        return view('liquids.create', compact('units'))->with('error', $error);
+        return view('liquids.create', array_merge($request->query(), compact('units')))
+            ->with('error', $error);
     }
 
     /**
@@ -58,8 +59,9 @@ class LiquidController extends Controller
      */
     public function update($id, UpdateLiquidRequest $request): RedirectResponse
     {
+        $data = $request->post();
         try {
-            $result = $this->liquidService->update($id, $request->toArray());
+            $result = $this->liquidService->update($id, $data);
             if (!$result) {
                 return redirect()->back()->with('error', 'Gagal mengubah data liquid')->withInput();
             }

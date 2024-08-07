@@ -171,6 +171,7 @@
                                 }).then(() => {
                                     // reload ajax and reset page to now page
                                     const pageInfo = unitsTable.DataTable().page.info()
+
                                     $('#unitsTable').DataTable().ajax.reload().page(pageInfo.page).draw('page')
                                 })
                             },

@@ -26,7 +26,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
-                <form id="liquidsForm" action="{{ route('waste.liquid.store') }}" method="POST">
+                <form id="liquidsForm" action="{{ route('waste.liquid.store', ['page' => $page ?? 1]) }}" method="POST">
                     @csrf
                     <div id="liquidsContainer">
                         @if (old('liquids'))
@@ -110,7 +110,7 @@
                         </div>
                         <div>
                             <button type="submit" class="btn btn-primary mx-1">Simpan</button>
-                            <a href="{{ route('waste.liquid') }}" class="btn btn-secondary">Kembali</a>
+                            <a href="{{ route('waste.liquid', ['page' => $page ?? 1]) }}" class="btn btn-secondary">Kembali</a>
                         </div>
                     </div>
                 </form>

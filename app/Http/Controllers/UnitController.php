@@ -5,12 +5,15 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreUnitRequest;
 use App\Http\Requests\UpdateUnitRequest;
 use App\Services\UnitService;
+use App\Traits\QueryExceptionTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class UnitController extends Controller
 {
+    use QueryExceptionTrait;
+
     protected UnitService $service;
 
     public function __construct(
@@ -50,9 +53,16 @@ class UnitController extends Controller
      */
     public function update($id, UpdateUnitRequest $request): RedirectResponse
     {
-        $result = $this->service->update($id, $request->toArray());
-        if (!$result) {
-            return redirect()->back()->with('error', 'Gagal mengubah data unit')->withInput();
+        // get all request from post
+        try {
+            $data = $request->post();
+            $result = $this->service->update($id, $data);
+            if (!$result) {
+                return redirect()->back()->with('error', 'Gagal mengubah data unit')->withInput();
+            }
+        } catch (Exception $e) {
+            $res = self::alreadyExists($e);
+            return redirect()->back()->with('error', $res['message'])->withInput();
         }
 
         return redirect()->route('waste.units', $request->query())
