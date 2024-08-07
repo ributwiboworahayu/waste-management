@@ -3,25 +3,37 @@
 @section('title', 'Units')
 
 @section('content')
-    <div class="container mt-5">
+    <div class="container mt-3">
         <div class="card">
             <div class="card-header">
                 Cairan
             </div>
             <div class="card-body">
-                <div class="d-flex justify-content-between mb-3">
-                    <a href="{{ route('waste.liquid.create') }}" class="btn btn-primary">Tambah</a>
-                </div>
+                @if($error)
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <li>{!! $error !!}</li>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @else
+                    <div class="d-flex justify-content-between mb-3">
+                        <a href="{{ route('waste.liquid.create') }}" class="btn btn-primary">Tambah</a>
+                    </div>
+                @endif
                 @if (session('success'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         {{ session('success') }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
-                @if (session('error'))
+                @if ($errors->any() || session('error'))
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        {{ session('error') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <ul class="mb-0">
+                            <li>{{ session('error') }}</li>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </ul>
                     </div>
                 @endif
                 <div class="table-responsive">
@@ -68,7 +80,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="editUnit" class="form-label">Satuan</label>
-                            <select name="unit" id="editUnit" class="form-select" required>
+                            <select name="unit_id" id="editUnit" class="form-select" required>
                                 <option value="">Pilih Satuan</option>
                                 @foreach ($units as $unit)
                                     <option value="{{ $unit->id }}">{{ $unit->name }}</option>
@@ -159,7 +171,7 @@
                                     text: response.message,
                                     icon: 'success'
                                 }).then(() => {
-                                    $('#unitsTable').DataTable().ajax.reload()
+                                    $('#liquidTable').DataTable().ajax.reload()
                                 })
                             },
                             error: function (xhr) {
@@ -185,7 +197,7 @@
                 const url = $(this).attr('href')
 
                 $('#editModal form').attr('action', url)
-                $('#editCode').val(data.code)
+                $('#editCode').val(data.code.toUpperCase()).attr('readonly', true)
                 $('#editName').val(data.name)
                 $('#editQuantity').val(data.quantity)
                 $('#editDescription').val(data.description)

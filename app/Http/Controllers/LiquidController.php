@@ -3,12 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreLiquidRequest;
+use App\Http\Requests\UpdateLiquidRequest;
 use App\Services\LiquidService;
+use App\Traits\QueryExceptionTrait;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class LiquidController extends Controller
 {
+
+    use QueryExceptionTrait;
+
     protected LiquidService $liquidService;
 
     public function __construct(
@@ -21,13 +27,15 @@ class LiquidController extends Controller
     public function liquid()
     {
         $units = $this->liquidService->getUnits();
-        return view('liquids.index', compact('units'));
+        $error = self::unitEmpty($units);
+        return view('liquids.index', compact('units'))->with('error', $error);
     }
 
     public function create()
     {
         $units = $this->liquidService->getUnits();
-        return view('liquids.create', compact('units'));
+        $error = self::unitEmpty($units);
+        return view('liquids.create', compact('units'))->with('error', $error);
     }
 
     /**
@@ -41,6 +49,37 @@ class LiquidController extends Controller
             return redirect()->route('waste.liquid')->with('success', $result['message']);
         }
         return redirect()->back()->withErrors($result['message'])->withInput();
+    }
+
+    /**
+     * @param $id
+     * @param UpdateLiquidRequest $request
+     * @return RedirectResponse
+     */
+    public function update($id, UpdateLiquidRequest $request): RedirectResponse
+    {
+        try {
+            $result = $this->liquidService->update($id, $request->toArray());
+            if (!$result) {
+                return redirect()->back()->with('error', 'Gagal mengubah data liquid')->withInput();
+            }
+        } catch (Exception $e) {
+            $res = self::alreadyExists($e);
+            return redirect()->back()->with('error', $res['message'])->withInput();
+        }
+        return redirect()->route('waste.liquid')->with('success', 'Berhasil mengubah data cairan');
+    }
+
+    public function delete($id)
+    {
+        try {
+            $result = $this->liquidService->delete($id);
+            if (!$result) {
+                return redirect()->back()->with('error', 'Gagal menghapus data liquid');
+            }
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     public function datatables(Request $request)

@@ -35,7 +35,7 @@
 @auth
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">{{ config('app.name') }}</a>
+            <a class="navbar-brand" href="/">{{ config('app.name') }}</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
@@ -44,7 +44,7 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        <a class="nav-link active" aria-current="page" href="/">Home</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
@@ -65,11 +65,14 @@
                             Laporan
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('waste.units') }}">Data Masuk</a></li>
+                            <li><a class="dropdown-item" href="{{ route('waste.index', ['type' => 'in']) }}">Data
+                                    Masuk</a>
+                            </li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="{{ route('waste.liquid') }}">Data Keluar</a></li>
+                            <li><a class="dropdown-item" href="{{ route('waste.index', ['type' => 'out']) }}">Data
+                                    Keluar</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -106,7 +109,7 @@
     </nav>
 @endauth
 
-<main class="container-fluid py-4">
+<main class="container-fluid">
     @yield('content')
 </main>
 

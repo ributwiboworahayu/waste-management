@@ -2,21 +2,32 @@
 
 namespace App\Services;
 
-use LaravelEasyRepository\Service;
+use App\Repositories\Interfaces\UnitRepositoryInterface;
 use App\Repositories\Interfaces\WasteRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
+use LaravelEasyRepository\Service;
 
-class WasteService extends Service {
+class WasteService extends Service
+{
 
-     /**
+    /**
      * don't change $this->mainInterface variable name
      * because used in extends service class
      */
-     protected $mainInterface;
+    protected WasteRepositoryInterface $mainInterface;
+    protected UnitRepositoryInterface $unitRepositoryInterface;
 
-    public function __construct(WasteRepositoryInterface $mainInterface)
+    public function __construct(
+        WasteRepositoryInterface $mainInterface,
+        UnitRepositoryInterface  $unitRepositoryInterface
+    )
     {
-      $this->mainInterface = $mainInterface;
+        $this->mainInterface = $mainInterface;
+        $this->unitRepositoryInterface = $unitRepositoryInterface;
     }
 
-    // Define your custom methods :)
+    public function getUnits(): ?Collection
+    {
+        return $this->unitRepositoryInterface->all();
+    }
 }

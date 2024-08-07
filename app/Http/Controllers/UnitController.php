@@ -25,9 +25,9 @@ class UnitController extends Controller
         return view('units.index');
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        return view('units.create');
+        return view('units.create', $request->query());
     }
 
     /**
@@ -38,7 +38,7 @@ class UnitController extends Controller
     {
         $result = $this->service->store($request);
         if ($result['status']) {
-            return redirect()->route('waste.units')->with('success', $result['message']);
+            return redirect()->route('waste.units', $request->query())->with('success', $result['message']);
         }
         return redirect()->back()->withErrors($result['message'])->withInput();
     }
@@ -52,18 +52,25 @@ class UnitController extends Controller
     {
         $result = $this->service->update($id, $request->toArray());
         if (!$result) {
-            return redirect()->back()->with('error', 'Gagal mengubah data unit');
+            return redirect()->back()->with('error', 'Gagal mengubah data unit')->withInput();
         }
-        return redirect()->route('waste.units')->with('success', 'Berhasil mengubah data unit');
+
+        return redirect()->route('waste.units', $request->query())
+            ->with('success', 'Berhasil mengubah data unit');
     }
 
     public function delete($id): RedirectResponse
     {
-        $result = $this->service->delete($id);
-        if (!$result) {
-            return redirect()->back()->with('error', 'Gagal menghapus data unit');
+        try {
+            $result = $this->service->delete($id);
+            if (!$result) {
+                return redirect()->back()->with('error', 'Gagal menghapus data unit');
+            }
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
         }
-        return redirect()->route('waste.units')->with('success', 'Berhasil menghapus data unit');
+        return redirect()->route('waste.units', request()->query())
+            ->with('success', 'Berhasil menghapus data unit');
     }
 
     /**

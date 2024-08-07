@@ -11,9 +11,9 @@ class UpdateLiquidRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,10 +21,14 @@ class UpdateLiquidRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            //
+            'code' => 'required|string',
+            'name' => 'required|string',
+            'unit_id' => 'required|exists:units,id',
+            'quantity' => 'nullable|numeric',
+            'description' => 'nullable|string',
         ];
     }
 }

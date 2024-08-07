@@ -19,7 +19,7 @@ class CreateWasteTransactionsTable extends Migration
             $table->float('quantity', 16, 8);
             $table->foreignId('unit_id')->constrained('units');
             $table->string('description')->nullable();
-            $table->enum('type', ['in', 'out']);
+            $table->enum('type', ['in', 'out'])->comment('in for input, out for output');
             $table->string('photo_path');
             $table->string('document_path')->nullable();
             $table->string('input_by');

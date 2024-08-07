@@ -9,7 +9,7 @@
                 Tambah Cairan
             </div>
             <div class="card-body">
-                @if($error)
+                @if($error ?? false)
                     <div class="alert alert-warning alert-dismissible fade show" role="alert">
                         <li>{!! $error !!}</li>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -110,7 +110,7 @@
                         </div>
                         <div>
                             <button type="submit" class="btn btn-primary mx-1">Simpan</button>
-                            <a href="{{ route('waste.liquid') }}" class="btn btn-secondary">Kembali</a>
+                            <a href="{{ route('waste.index') }}" class="btn btn-secondary">Kembali</a>
                         </div>
                     </div>
                 </form>

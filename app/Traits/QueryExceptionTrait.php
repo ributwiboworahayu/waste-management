@@ -11,7 +11,7 @@ trait QueryExceptionTrait
      * @param $e
      * @return array
      */
-    protected function alreadyExists($e): array
+    protected static function alreadyExists($e): array
     {
         if ($e instanceof QueryException) {
             if (str_contains($e->getMessage(), 'already exists')) {
@@ -29,5 +29,14 @@ trait QueryExceptionTrait
             }
         }
         return ['status' => false, 'message' => ($e->getMessage() ?? 'Terjadi kesalahan')];
+    }
+
+    /**
+     * @param $units
+     * @return string|null
+     */
+    protected static function unitEmpty($units): ?string
+    {
+        return empty($units) ? "Unit belum tersedia, silahkan tambahkan unit terlebih dahulu. <a href='" . route('waste.units.create') . "' class='btn btn-sm btn-secondary'><i class='bi bi-plus'></i> Tambah Unit</a>" : null;
     }
 }

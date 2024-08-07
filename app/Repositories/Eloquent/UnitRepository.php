@@ -29,9 +29,10 @@ class UnitRepository extends Eloquent implements UnitRepositoryInterface
      */
     public function datatableQuery(Request $request): array
     {
-        $query = $this->model->select('id', 'name', 'description');
+        $query = $this->model->select('id', 'name', 'symbol', 'description');
         $columns = [
             'units.name',
+            'units.symbol',
             'units.description',
         ];
 

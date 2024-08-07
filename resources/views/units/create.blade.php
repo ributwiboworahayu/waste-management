@@ -3,7 +3,7 @@
 @section('title', 'Tambah Satuan')
 
 @section('content')
-    <div class="container mt-5">
+    <div class="container mt-3">
         <div class="card">
             <div class="card-header">
                 Tambah Satuan
@@ -20,7 +20,8 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
-                <form id="unitsForm" action="{{ route('waste.units.store') }}" method="POST" class="row g-3">
+                <form id="unitsForm" action="{{ route('waste.units.store', ['page' => $page ?? 1]) }}" method="POST"
+                      class="row g-3">
                     @csrf
                     <div id="unitsContainer">
                         @if (old('units'))
@@ -31,7 +32,13 @@
                                         <input type="text" class="form-control" id="name_{{ $index }}"
                                                name="units[{{ $index }}][name]" value="{{ $unit['name'] }}" required>
                                     </div>
-                                    <div class="col-md-8">
+                                    <div class="col-md-2">
+                                        <label for="symbol_{{ $index }}" class="form-label">Simbol</label>
+                                        <input type="text" class="form-control" id="symbol_{{ $index }}"
+                                               name="units[{{ $index }}][symbol]" value="{{ $unit['symbol'] }}"
+                                               required>
+                                    </div>
+                                    <div class="col-md-4">
                                         <label for="description_{{ $index }}" class="form-label">Deskripsi</label>
                                         <input type="text" class="form-control" id="description_{{ $index }}"
                                                name="units[{{ $index }}][description]"
@@ -47,7 +54,12 @@
                                     <input type="text" class="form-control" id="name_0" name="units[0][name]"
                                            required>
                                 </div>
-                                <div class="col-md-8">
+                                <div class="col-md-2">
+                                    <label for="symbol_0" class="form-label">Simbol</label>
+                                    <input type="text" class="form-control" id="symbol_0" name="units[0][symbol]"
+                                           required>
+                                </div>
+                                <div class="col-md-4">
                                     <label for="description_0" class="form-label">Deskripsi</label>
                                     <input type="text" class="form-control" id="description_0"
                                            name="units[0][description]">
@@ -67,7 +79,8 @@
                         </div>
                         <div>
                             <button type="submit" class="btn btn-primary mx-1">Simpan</button>
-                            <a href="{{ route('waste.units') }}" class="btn btn-secondary">Kembali</a>
+                            <a href="{{ route('waste.units', ['page' => $page ?? 1]) }}"
+                               class="btn btn-secondary">Kembali</a>
                         </div>
                     </div>
                 </form>
@@ -88,7 +101,11 @@
                             <label for="name_${unitIndex}" class="form-label">Nama Satuan</label>
                             <input type="text" class="form-control" id="name_${unitIndex}" name="units[${unitIndex}][name]" required>
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-2">
+                            <label for="symbol_${unitIndex}" class="form-label">Simbol</label>
+                            <input type="text" class="form-control" id="symbol_${unitIndex}" name="units[${unitIndex}][symbol]" required>
+                        </div>
+                        <div class="col-md-4">
                             <label for="description_${unitIndex}" class="form-label">Deskripsi</label>
                             <input type="text" class="form-control" id="description_${unitIndex}" name="units[${unitIndex}][description]" required>
                         </div>
@@ -109,10 +126,7 @@
                 }
             })
 
-            if ($('#unitsContainer .unit-group').length === 1) {
-                $('#removeUnitButton').prop('disabled', true).addClass('disabled')
-            }
-
+            $('#removeUnitButton').prop('disabled', true).addClass('disabled')
         })
     </script>
 @endpush

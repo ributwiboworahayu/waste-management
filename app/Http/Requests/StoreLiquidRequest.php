@@ -24,10 +24,21 @@ class StoreLiquidRequest extends FormRequest
     public function rules()
     {
         return [
-            'liquids.*.codeName' => 'required|string|max:255',
+            'liquids.*.codeName' => 'required|string|max:255|unique:liquid_wastes,code',
             'liquids.*.name' => 'required|string|max:255',
             'liquids.*.unitName' => 'required|int',
             'liquids.*.description' => 'nullable|string|max:1000',
+        ];
+    }
+
+    // message
+    public function messages(): array
+    {
+        return [
+            'liquids.*.codeName.required' => 'Kode tidak boleh kosong',
+            'liquids.*.codeName.unique' => 'Ada kode yang sama atau sudah digunakan',
+            'liquids.*.name.required' => 'Nama tidak boleh kosong',
+            'liquids.*.unitName.required' => 'Unit tidak boleh kosong',
         ];
     }
 }
