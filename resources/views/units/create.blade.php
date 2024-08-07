@@ -61,12 +61,12 @@
                             <button type="button" id="addUnitButton" class="btn btn-secondary">
                                 <i class="bi bi-plus"></i>
                             </button>
-                            <button type="button" id="removeUnitButton" class="btn btn-danger">
+                            <button type="button" id="removeUnitButton" class="btn btn-danger mx-1">
                                 <i class="bi bi-dash"></i>
                             </button>
                         </div>
                         <div>
-                            <button type="submit" class="btn btn-primary">Simpan</button>
+                            <button type="submit" class="btn btn-primary mx-1">Simpan</button>
                             <a href="{{ route('waste.units') }}" class="btn btn-secondary">Kembali</a>
                         </div>
                     </div>

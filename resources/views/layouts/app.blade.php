@@ -59,13 +59,26 @@
                             <li><a class="dropdown-item" href="{{ route('waste.liquid') }}">Cairan</a></li>
                         </ul>
                     </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            Laporan
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ route('waste.units') }}">Data Masuk</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="{{ route('waste.liquid') }}">Data Keluar</a></li>
+                        </ul>
+                    </li>
                 </ul>
                 <ul class="navbar-nav ms-auto d-flex align-items-center">
                     <li class="nav-item dropdown">
                         <a id="navbarDropdown" class="nav-link dropdown-toggle d-flex align-items-center" href="#"
                            role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <img
-                                src="{{ Auth::user()->profile_photo_url ?? 'https://ui-avatars.com/api/?name=' . Auth::user()->name }}"
+                                src="{{ Auth::user()->detail->photo ?? 'https://ui-avatars.com/api/?name=' . Auth::user()->name }}"
                                 alt="{{ Auth::user()->name }}"
                                 class="profile-picture me-2">
                             {{ Auth::user()->name }}
@@ -77,7 +90,7 @@
                             </a>
                             <hr class="dropdown-divider">
                             <a class="dropdown-item" href="{{ route('logout') }}"
-                               onclick="preventDefault(); document.getElementById('logout-form').submit();">
+                               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                 Logout
                             </a>
 

@@ -122,9 +122,7 @@
                         render: function (data) {
                             let buttons = ''
                             $.each(data, function (key, value) {
-                                buttons += `<a href="${value.route}" class="btn btn-sm ${value.class}">`
-                                    + `<i class="${value.icon}"></i> `
-                                    + `</a> `
+                                buttons += `<a href="${value.route}" class="btn btn-sm mx-sm-1 ${value.class}"><i class="${value.icon}"></i></a>  `
                             })
                             return buttons
                         }

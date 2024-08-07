@@ -98,12 +98,12 @@
                             <button type="button" id="addLiquidButton" class="btn btn-secondary">
                                 <i class="bi bi-plus"></i>
                             </button>
-                            <button type="button" id="removeLiquidButton" class="btn btn-danger" disabled>
+                            <button type="button" id="removeLiquidButton" class="btn mx-1 btn-danger" disabled>
                                 <i class="bi bi-dash"></i>
                             </button>
                         </div>
                         <div>
-                            <button type="submit" class="btn btn-primary">Simpan</button>
+                            <button type="submit" class="btn btn-primary mx-1">Simpan</button>
                             <a href="{{ route('waste.liquid') }}" class="btn btn-secondary">Kembali</a>
                         </div>
                     </div>
