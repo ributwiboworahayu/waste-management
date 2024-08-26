@@ -15,6 +15,7 @@ class CreateWasteTransactionsTable extends Migration
     {
         Schema::create('waste_transactions', function (Blueprint $table) {
             $table->id();
+            $table->string('code', 50)->unique();
             $table->foreignId('waste_transaction_detail_id')->constrained('waste_transaction_details');
             $table->float('quantity', 16, 8);
             $table->enum('type', ['in', 'out'])->comment('in for input, out for output');

@@ -11,4 +11,14 @@ class WasteTransaction extends Model
     use HasFactory, SoftDeletes;
 
     protected $guarded = [];
+
+    public function liquid()
+    {
+        return $this->belongsTo(Liquid::class);
+    }
+
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class);
+    }
 }

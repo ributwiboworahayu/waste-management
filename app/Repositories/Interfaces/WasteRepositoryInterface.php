@@ -4,7 +4,8 @@ namespace App\Repositories\Interfaces;
 
 use LaravelEasyRepository\Repository;
 
-interface WasteRepositoryInterface extends Repository{
+interface WasteRepositoryInterface extends Repository
+{
 
-    // Write something awesome :)
+    public function getLastCode();
 }

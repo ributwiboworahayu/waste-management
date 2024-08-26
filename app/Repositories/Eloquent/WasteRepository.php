@@ -23,5 +23,8 @@ class WasteRepository extends Eloquent implements WasteRepositoryInterface
         $this->model = $model;
     }
 
-    // Write something awesome :)
+    public function getLastCode()
+    {
+        return $this->model->latest()->first() ?? 'WST0000';
+    }
 }

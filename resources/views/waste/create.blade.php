@@ -11,7 +11,7 @@
             <div class="card-body">
                 @if($error ?? false)
                     <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        <li>{!! $error !!}</li>
+                        <p>{!! $error !!}</p>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
@@ -28,27 +28,62 @@
                 @endif
                 <form id="liquidsForm" action="{{ route('waste.store') }}" method="POST">
                     @csrf
-                    <div class="row g-3">
+                    <div class="row g-3 mb-3">
                         <div class="col-md-2">
                             <label for="liquid_waste" class="col-form-label">Cairan limbah</label>
                         </div>
-                        <div class="col-auto">
+                        <div class="col-3">
                             <select class="form-select select2" id="liquid_waste" name="liquid_waste"
                                     data-placeholder="Pilih Cairan Limbah" required>
                                 <option></option>
+                                @foreach($liquids as $liquid)
+                                    <option value="{{ $liquid['id'] }}">{{ $liquid['text'] }}</option>
+                                @endforeach
                             </select>
                         </div>
-                        <div class="col-auto">
+                        <div class="col-1">
                             <label for="unit" class="col-form-label">Satuan</label>
                         </div>
-                        <div class="col-auto">
+                        <div class="col-2">
                             <select class="form-select select2" id="unit" name="unit"
                                     data-placeholder="Pilih Satuan" required>
                                 <option></option>
                             </select>
                         </div>
                     </div>
-                    <div class="mb-3 row mt-2">
+                    <div class="mb-3 row">
+                        <div class="col-md-2">
+                            <label for="codeName" class="form-label">Kode</label>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="codeName" name="codeName"
+                                   placeholder="Kode" required value="{{ $codeName ?? '' }}">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <div class="col-md-2">
+                            <label for="quantity" class="form-label">Jumlah</label>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="text" class="form-control" id="quantity" name="quantity"
+                                   placeholder="Jumlah" required>
+                        </div>
+                        <div class="col-md-8">
+                            <small class="text-muted" id="quantityInfo">* dalam satuan</small>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <div class="col-md-2">
+                            <label for="photo" class="form-label">Foto</label>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
+                        </div>
+                        <div class="col-md-4">
+                            <small class="text-muted d-block">* Foto harus berformat JPG, JPEG, PNG, atau BMP</small>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
                         <div class="col-md-2">
                             <label for="description" class="form-label">Deskripsi</label>
                         </div>
@@ -72,70 +107,51 @@
 @push('custom-js')
     <script>
         $(document).ready(function () {
-            let liquidIndex = $('#liquidsContainer .liquid-group').length
-            const unitOptions = @json($units)
+            const liquidWaste = $('#liquid_waste')
+            const unit = $('#unit')
 
-            $('#addLiquidButton').on('click', function () {
-                const liquidGroup = `
-                    <div class="liquid-group row mb-3" data-index="${liquidIndex}">
-                        <div class="col-auto">
-                            <label for="codeName_${liquidIndex}" class="form-label">Kode</label>
-                            <input type="text" class="form-control" id="codeName_${liquidIndex}" name="liquids[${liquidIndex}][codeName]"
-                                   placeholder="K0${liquidIndex + 1}.." required>
-                        </div>
-                        <div class="col-auto">
-                            <label for="name_${liquidIndex}" class="form-label">Nama</label>
-                            <input type="text" class="form-control" id="name_${liquidIndex}" name="liquids[${liquidIndex}][name]"
-                                   placeholder="Nama" required>
-                        </div>
-                        <div class="col-auto">
-                            <label for="unitName_${liquidIndex}" class="form-label">Satuan</label>
-                            <select class="form-select select2" id="unitName_${liquidIndex}" name="liquids[${liquidIndex}][unitName]"
-                                    data-placeholder="Pilih Satuan" required>
-                                <option></option>
-                                ${unitOptions.map(unit => `<option value="${unit.id}">${unit.name}</option>`).join('')}
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="description_${liquidIndex}" class="form-label">Deskripsi</label>
-                            <input type="text" class="form-control" id="description_${liquidIndex}" name="liquids[${liquidIndex}][description]"
-                                   placeholder="Deskripsi">
-                        </div>
-                    </div>
-                `
+            // load unit from ajax when liquid waste selected
+            liquidWaste.on('select2:select', function (e) {
+                const selectedLiquidWaste = e.params.data
+                $.ajax({
+                    url: '{{ config('app.url') }}waste/liquid/' + selectedLiquidWaste.id + '/units',
+                    type: 'GET',
+                    success: function (response) {
+                        unit.empty()
+                        unit.append('<option></option>')
+                        unit.select2({
+                            data: response.data,
+                            theme: 'bootstrap-5',
+                            placeholder: 'Pilih Satuan',
+                            width: '100%' // Make sure the Select2 dropdown is full width
+                        })
 
-                $('#liquidsContainer').append(liquidGroup)
-                $('#removeLiquidButton').prop('disabled', false)
+                        if (response.data.length > 0) {
+                            unit.val(response.data[0].id).trigger('change')
+                        }
 
-                // Initialize Select2 for new elements
-                $('.select2').select2({
-                    theme: 'bootstrap-5',
-                    placeholder: 'Pilih Satuan',
-                    width: '100%' // Make sure the Select2 dropdown is full width
-                })
-
-                liquidIndex++
-            })
-
-
-            const removeLiquidButton = $('#removeLiquidButton')
-            removeLiquidButton.on('click', function () {
-                const liquidGroup = $('#liquidsContainer .liquid-group')
-                if (liquidGroup.length > 1) {
-                    liquidGroup.last().remove()
-                    if (liquidGroup.length <= 2) {
-                        $('#removeLiquidButton').prop('disabled', true)
+                        // change unit info
+                        changeUnitInfo(response.data[0].symbol)
                     }
-                    liquidIndex--
-                }
+                })
             })
 
-            removeLiquidButton.attr('disabled', true)
+            unit.on('select2:select', function (e) {
+                const selectedUnit = e.params.data
+                changeUnitInfo(selectedUnit.symbol)
+            })
 
-            // auto capitalize codeName
             $('#liquidsForm').on('input', 'input[id^=codeName]', function () {
                 this.value = this.value.toUpperCase()
             })
+
+            $('#quantity').on('keypress', function (e) {
+                return e.metaKey || (e.charCode >= 48 && e.charCode <= 57) || e.charCode === 46
+            })
         })
+
+        function changeUnitInfo(symbol) {
+            $('#quantityInfo').text(`* dalam satuan ${symbol}`)
+        }
     </script>
 @endpush

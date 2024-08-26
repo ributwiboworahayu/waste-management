@@ -29,6 +29,14 @@
             border-radius: 50%;
             object-fit: cover;
         }
+
+        html, body {
+            height: 100%;
+            background-image: url('https://cdn.pixabay.com/photo/2020/06/23/00/53/river-5330961_1280.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
     </style>
 </head>
 <body>
@@ -52,7 +60,7 @@
                             Data
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('waste.units') }}">Unit</a></li>
+                            <li><a class="dropdown-item" href="{{ route('waste.units') }}">Unit (Satuan)</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>

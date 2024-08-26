@@ -44,7 +44,7 @@ Route::middleware('auth')->group(function () {
     })->name('contact');
 
     // setting page
-    Route::get('/setting', function () {
+    Route::get('/settings', function () {
         return view('settings');
     })->name('settings');
 
@@ -55,6 +55,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/edit/{id}', [WasteController::class, 'edit'])->name('waste.edit');
         Route::put('/update/{id}', [WasteController::class, 'update'])->name('waste.update');
         Route::prefix('liquid')->group(function () {
+            Route::get('{liquidWaste}/units', [WasteController::class, 'getUnitByLiquidId'])->name('waste.get-unit-by-liquid');
             Route::get('/', [LiquidController::class, 'liquid'])->name('waste.liquid');
             Route::get('/create', [LiquidController::class, 'create'])->name('waste.liquid.create');
             Route::post('/store', [LiquidController::class, 'store'])->name('waste.liquid.store');

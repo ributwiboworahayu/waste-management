@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LiquidWaste;
 use App\Services\WasteService;
 use App\Traits\QueryExceptionTrait;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class WasteController extends Controller
 {
@@ -19,7 +20,7 @@ class WasteController extends Controller
         $this->wasteService = $wasteService;
     }
 
-    public function index(Request $request)
+    public function index()
     {
         return view('waste.index');
     }
@@ -27,7 +28,19 @@ class WasteController extends Controller
     public function create()
     {
         $units = $this->wasteService->getUnits();
-        $error = self::unitEmpty($units);
-        return view('waste.create', compact('units'))->with('error', $error);
+        $liquids = $this->wasteService->getLiquids();
+        $codeName = $this->wasteService->generateCode();
+        $error = self::unitOrLiquidEmpty($units, $liquids);
+        return view('waste.create', compact(['liquids', 'codeName']))->with('error', $error);
+    }
+
+    /**
+     * @param LiquidWaste $liquidWaste
+     * @return JsonResponse
+     */
+    public function getUnitByLiquidId(LiquidWaste $liquidWaste): JsonResponse
+    {
+        $result = $this->wasteService->getUnitByLiquid($liquidWaste);
+        return response()->json($result);
     }
 }
