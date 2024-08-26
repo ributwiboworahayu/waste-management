@@ -18,47 +18,47 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function () {
     Route::get('/', function () {
-        return redirect('/dashboard');
+        return redirect('dashboard');
     });
 
-    Route::get('/dashboard', function () {
+    Route::get('dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
 
-    Route::get('/profile', function () {
+    Route::get('profile', function () {
         return view('profile');
     })->name('profile');
 
-    Route::get('/home', function () {
+    Route::get('home', function () {
         return redirect('/');
     })->name('home');
 
     // about page
-    Route::get('/about', function () {
+    Route::get('about', function () {
         return view('about');
     })->name('about');
 
     // contact page
-    Route::get('/contact', function () {
+    Route::get('contact', function () {
         return view('contact');
     })->name('contact');
 
     // setting page
-    Route::get('/settings', function () {
+    Route::get('settings', function () {
         return view('settings');
     })->name('settings');
 
     Route::prefix('waste')->group(function () {
         Route::get('/', [WasteController::class, 'index'])->name('waste.index');
-        Route::get('/create', [WasteController::class, 'create'])->name('waste.create');
-        Route::post('/store', [WasteController::class, 'store'])->name('waste.store');
-        Route::get('/edit/{id}', [WasteController::class, 'edit'])->name('waste.edit');
-        Route::put('/update/{id}', [WasteController::class, 'update'])->name('waste.update');
+        Route::get('create', [WasteController::class, 'create'])->name('waste.create');
+        Route::post('store', [WasteController::class, 'store'])->name('waste.store');
+        Route::get('edit/{id}', [WasteController::class, 'edit'])->name('waste.edit');
+        Route::put('update/{id}', [WasteController::class, 'update'])->name('waste.update');
         Route::prefix('liquid')->group(function () {
             Route::get('{liquidWaste}/units', [WasteController::class, 'getUnitByLiquidId'])->name('waste.get-unit-by-liquid');
             Route::get('/', [LiquidController::class, 'liquid'])->name('waste.liquid');
-            Route::get('/create', [LiquidController::class, 'create'])->name('waste.liquid.create');
-            Route::post('/store', [LiquidController::class, 'store'])->name('waste.liquid.store');
+            Route::get('create', [LiquidController::class, 'create'])->name('waste.liquid.create');
+            Route::post('store', [LiquidController::class, 'store'])->name('waste.liquid.store');
             Route::put('{id}', [LiquidController::class, 'update'])->name('waste.liquid.update');
             Route::delete('{id}', [LiquidController::class, 'delete'])->name('waste.liquid.delete');
 
@@ -70,7 +70,7 @@ Route::middleware('auth')->group(function () {
         Route::prefix('units')->group(function () {
             Route::get('/', [UnitController::class, 'units'])->name('waste.units');
             Route::post('/', [UnitController::class, 'store'])->name('waste.units.store');
-            Route::get('/create', [UnitController::class, 'create'])->name('waste.units.create');
+            Route::get('create', [UnitController::class, 'create'])->name('waste.units.create');
             Route::put('{id}', [UnitController::class, 'update'])->name('waste.units.update');
             Route::delete('{id}', [UnitController::class, 'delete'])->name('waste.units.delete');
 

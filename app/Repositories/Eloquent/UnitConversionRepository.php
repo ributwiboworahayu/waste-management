@@ -26,4 +26,9 @@ class UnitConversionRepository extends Eloquent implements UnitConversionReposit
     {
         return $this->model->where('from_unit_id', $fromUnitId)->with('toUnit')->get();
     }
+
+    public function getUnitConversionByFromAndToUnitId($fromUnitId, $toUnitId)
+    {
+        return $this->model->where('from_unit_id', $fromUnitId)->where('to_unit_id', $toUnitId)->first();
+    }
 }

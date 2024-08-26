@@ -4,10 +4,8 @@ namespace App\Repositories\Interfaces;
 
 use LaravelEasyRepository\Repository;
 
-interface WasteRepositoryInterface extends Repository
+interface WasteTransactionDetailRepositoryInterface extends Repository
 {
-
-    public function getLastCode();
 
     public function store(array $data);
 }

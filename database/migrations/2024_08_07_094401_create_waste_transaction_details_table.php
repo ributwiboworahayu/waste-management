@@ -15,7 +15,7 @@ class CreateWasteTransactionDetailsTable extends Migration
     {
         Schema::create('waste_transaction_details', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('unit_conversion_id')->constrained('unit_conversions');
+            $table->foreignId('unit_conversion_id')->nullable()->constrained('unit_conversions')->nullOnDelete();
             $table->foreignId('liquid_waste_id')->constrained('liquid_wastes');
             $table->float('quantity', 16, 8);
             $table->float('conversion_value', 16, 8);

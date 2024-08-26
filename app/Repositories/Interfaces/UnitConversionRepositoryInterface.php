@@ -8,4 +8,6 @@ interface UnitConversionRepositoryInterface extends Repository
 {
 
     public function getUnitConversionByFromUnitId($fromUnitId);
+
+    public function getUnitConversionByFromAndToUnitId($fromUnitId, $toUnitId);
 }
