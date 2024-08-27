@@ -46,9 +46,8 @@ class LiquidController extends Controller
     public function store(StoreLiquidRequest $request): RedirectResponse
     {
         $result = $this->liquidService->store($request);
-        if ($result['status']) {
-            return redirect()->route('waste.liquid')->with('success', $result['message']);
-        }
+        if ($result['status']) return redirect()->route('waste.liquid', $request->query())
+            ->with('success', $result['message']);
         return redirect()->back()->withErrors($result['message'])->withInput();
     }
 
@@ -62,9 +61,7 @@ class LiquidController extends Controller
         $data = $request->post();
         try {
             $result = $this->liquidService->update($id, $data);
-            if (!$result) {
-                return redirect()->back()->with('error', 'Gagal mengubah data liquid')->withInput();
-            }
+            if (!$result) return redirect()->back()->with('error', 'Gagal mengubah data liquid')->withInput();
         } catch (Exception $e) {
             $res = self::alreadyExists($e);
             return redirect()->back()->with('error', $res['message'])->withInput();
@@ -76,9 +73,7 @@ class LiquidController extends Controller
     {
         try {
             $result = $this->liquidService->delete($id);
-            if (!$result) {
-                return redirect()->back()->with('error', 'Gagal menghapus data liquid');
-            }
+            if (!$result) return redirect()->back()->with('error', 'Gagal menghapus data liquid');
         } catch (Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
@@ -87,9 +82,7 @@ class LiquidController extends Controller
     public function datatables(Request $request)
     {
         $result = $this->liquidService->datatables($request);
-        if ($result['ajax']) {
-            return response()->json($result);
-        }
-        return view('liquids.index');
+        if ($result['ajax']) return response()->json($result);
+        return redirect()->route('waste.liquid')->with('error', 'Terjadi kesalahan');
     }
 }

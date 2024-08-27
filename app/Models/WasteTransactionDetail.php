@@ -11,4 +11,9 @@ class WasteTransactionDetail extends Model
     use HasFactory, SoftDeletes;
 
     protected $guarded = [];
+
+    public function getPhotoAttribute(): string
+    {
+        return $this->attributes['photo'] ? asset('storage/' . $this->attributes['photo']) : '';
+    }
 }

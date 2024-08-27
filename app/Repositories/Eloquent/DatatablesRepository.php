@@ -6,6 +6,7 @@ use App\Repositories\Interfaces\DatatablesRepositoryInterface;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use LaravelEasyRepository\Implementations\Eloquent;
 
 class DatatablesRepository extends Eloquent implements DatatablesRepositoryInterface
@@ -45,6 +46,8 @@ class DatatablesRepository extends Eloquent implements DatatablesRepositoryInter
             // Mapping nama kolom yang akan diurutkan
             $orderColumn = $columns[$orderColumnIndex] ?? $columns[0];
 
+            if (config('app.debug')) Log::info('orderColumn: ' . $orderColumn);
+
             $cloneQuery = clone $query;
             // Terapkan filter pencarian
             if (!empty($searchValue)) {
@@ -70,7 +73,7 @@ class DatatablesRepository extends Eloquent implements DatatablesRepositoryInter
             // Total records
             $totalRecords = self::totalRecords($query);
 
-            // if it has having raw
+            // if it has had raw
             if (!empty($havingRaw)) {
                 if ($totalRecords == 0) {
                     // use having raw
@@ -115,7 +118,7 @@ class DatatablesRepository extends Eloquent implements DatatablesRepositoryInter
                                 'route' => route($actionRoutes['detail'], array_merge([$tableIdColumnName => $id], $params)),
                                 'label' => 'Detail',
                                 'icon' => 'bi bi-eye',
-                                'class' => 'btn-info'
+                                'class' => 'btn-info btn-detail'
                             ];
                         }
 
@@ -161,7 +164,7 @@ class DatatablesRepository extends Eloquent implements DatatablesRepositoryInter
      */
     private static function totalRecords($query): int
     {
-        // Total records from query
+        // Total records from a query
         $totalRecordQuery = DB::table(DB::raw("({$query->toSql()}) as sub"));
         try {
             return $totalRecordQuery->mergeBindings($query->getQuery())->count();

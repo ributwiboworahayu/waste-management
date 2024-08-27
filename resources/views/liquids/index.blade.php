@@ -91,7 +91,9 @@
                         </div>
                         <div class="mb-3">
                             <label for="editQuantity" class="form-label">Kuantitas</label>
-                            <input type="number" class="form-control" name="quantity" id="editQuantity" required>
+                            <input type="number" class="form-control text-info" name="quantity" id="editQuantity"
+                                   required
+                                   readonly>
                         </div>
                         <div class="mb-3">
                             <label for="editDescription" class="form-label">Deskripsi</label>

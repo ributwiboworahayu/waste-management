@@ -1,4 +1,3 @@
-{{--@dd($error)--}}
 @extends('layouts.app')
 
 @section('title', 'Tambah Satuan')
@@ -27,9 +26,10 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
-                <form id="liquidsForm" action="{{ route('waste.store') }}" method="POST" enctype="multipart/form-data">
+                <form id="liquidsForm" action="{{ route('waste.store', request()->query()) }}" method="POST"
+                      enctype="multipart/form-data">
                     @csrf
-                    <div class="row g-3 mb-3">
+                    <div class="row mb-3">
                         <div class="col-md-2">
                             <label for="liquid_waste" class="col-form-label">Cairan limbah</label>
                         </div>
@@ -78,12 +78,22 @@
                         <div class="col-md-2">
                             <label for="quantity" class="form-label">Jumlah</label>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-1">
                             <input type="text" class="form-control" id="quantity" name="quantity"
                                    placeholder="Jumlah" required value="{{ old('quantity') }}">
                         </div>
-                        <div class="col-md-8">
-                            <small class="text-muted" id="quantityInfo">* dalam satuan</small>
+                        <div class="col-md-2">
+                            <small class="text-muted" id="quantityInfo">*</small>
+                        </div>
+                        <div class="col-md-1">
+                            <label for="available_quantity" class="form-label">Stok</label>
+                        </div>
+                        <div class="col-md-1">
+                            <input type="text" class="form-control text-info" value="0" readonly
+                                   id="available_quantity">
+                        </div>
+                        <div class="col-sm-2">
+                            <small class="text-muted" id="quantityNow">*</small>
                         </div>
                     </div>
                     <div class="mb-3 row">
@@ -95,7 +105,8 @@
                                    value="{{ old('photo') }}">
                         </div>
                         <div class="col-md-4">
-                            <small class="text-muted d-block">* Foto harus berformat JPG, JPEG, PNG, atau BMP</small>
+                            <small class="text-muted d-block">* Foto harus berformat JPG, JPEG, PNG, atau
+                                BMP</small>
                         </div>
                     </div>
                     <div class="mb-3 row">
@@ -147,7 +158,8 @@
                                     value="approved" {{ old('status') == 'approved' || !old('status') ? 'selected' : '' }}>
                                     Accepted
                                 </option>
-                                <option value="rejected" {{ old('status') == 'rejected' ? 'selected' : '' }}>Rejected
+                                <option value="rejected" {{ old('status') == 'rejected' ? 'selected' : '' }}>
+                                    Rejected
                                 </option>
                             </select>
                         </div>
@@ -165,7 +177,7 @@
                     <div class="d-flex justify-content-between mb-3">
                         <div>
                             <button type="submit" class="btn btn-primary mx-1">Simpan</button>
-                            <a href="{{ route('waste.index') }}" class="btn btn-secondary">Kembali</a>
+                            <a href="{{ route('waste.index', request()->query()) }}" class="btn btn-secondary mx-1">Batal</a>
                         </div>
                     </div>
                 </form>
@@ -221,6 +233,9 @@
 
                         // change unit info
                         changeUnitInfo(response.data[0].symbol)
+
+                        $('#quantityNow').text(`* dalam satuan ${response.data[0].symbol}`)
+                        $('#available_quantity').val(response.data[0].quantity)
                     }
                 })
             }

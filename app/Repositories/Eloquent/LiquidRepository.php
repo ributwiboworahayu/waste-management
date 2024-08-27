@@ -2,7 +2,6 @@
 
 namespace App\Repositories\Eloquent;
 
-use App\Models\Liquid;
 use App\Models\LiquidWaste;
 use App\Repositories\Interfaces\LiquidRepositoryInterface;
 use Illuminate\Database\Eloquent\Model;
@@ -14,7 +13,7 @@ class LiquidRepository extends Eloquent implements LiquidRepositoryInterface
 
     /**
      * Model class to be used in this repository for the common methods inside Eloquent
-     * Don't remove or change $this->model variable name
+     * Don't remove or change $this→model variable name
      * @property Model|mixed $model;
      */
     protected LiquidWaste $model;

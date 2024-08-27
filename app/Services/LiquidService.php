@@ -18,8 +18,8 @@ class LiquidService extends Service
     use QueryExceptionTrait;
 
     /**
-     * don't change $this->mainInterface variable name
-     * because used in extends service class
+     * don't change $this→mainInterface variable name
+     * because used in extent service class
      */
     protected LiquidRepositoryInterface $mainInterface;
     protected DatatablesRepositoryInterface $datatablesRepository;

@@ -52,15 +52,22 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [WasteController::class, 'index'])->name('waste.index');
         Route::get('create', [WasteController::class, 'create'])->name('waste.create');
         Route::post('store', [WasteController::class, 'store'])->name('waste.store');
-        Route::get('edit/{id}', [WasteController::class, 'edit'])->name('waste.edit');
-        Route::put('update/{id}', [WasteController::class, 'update'])->name('waste.update');
+        Route::prefix('{id}')->group(function () {
+            Route::get('show', [WasteController::class, 'show'])->name('waste.show');
+            Route::get('edit', [WasteController::class, 'edit'])->name('waste.edit');
+        });
+
+        Route::prefix('datatables')->group(function () {
+            Route::get('/', [WasteController::class, 'datatables'])->name('waste.datatables');
+        });
+
         Route::prefix('liquid')->group(function () {
-            Route::get('{liquidWaste}/units', [WasteController::class, 'getUnitByLiquidId'])->name('waste.get-unit-by-liquid');
             Route::get('/', [LiquidController::class, 'liquid'])->name('waste.liquid');
             Route::get('create', [LiquidController::class, 'create'])->name('waste.liquid.create');
             Route::post('store', [LiquidController::class, 'store'])->name('waste.liquid.store');
             Route::put('{id}', [LiquidController::class, 'update'])->name('waste.liquid.update');
             Route::delete('{id}', [LiquidController::class, 'delete'])->name('waste.liquid.delete');
+            Route::get('{liquidWaste}/units', [WasteController::class, 'getUnitByLiquidId'])->name('waste.get-unit-by-liquid');
 
             Route::prefix('datatables')->group(function () {
                 Route::get('/', [LiquidController::class, 'datatables'])->name('waste.liquid.datatables');

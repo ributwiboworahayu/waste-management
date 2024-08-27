@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class WasteTransaction extends Model
@@ -12,13 +13,18 @@ class WasteTransaction extends Model
 
     protected $guarded = [];
 
-    public function liquid()
+    public function liquid(): BelongsTo
     {
-        return $this->belongsTo(Liquid::class);
+        return $this->belongsTo(LiquidWaste::class);
     }
 
-    public function unit()
+    public function unit(): BelongsTo
     {
         return $this->belongsTo(Unit::class);
+    }
+
+    public function detail(): BelongsTo
+    {
+        return $this->belongsTo(WasteTransactionDetail::class, 'waste_transaction_detail_id');
     }
 }

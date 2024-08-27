@@ -73,11 +73,12 @@
                             Laporan
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('waste.index', ['type' => 'in']) }}">Data
-                                    Masuk</a>
-                            </li>
+                            <li><a class="dropdown-item" href="{{ route('waste.index') }}">Semua Data</a></li>
                             <li>
                                 <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="{{ route('waste.index', ['type' => 'in']) }}">Data
+                                    Masuk</a>
                             </li>
                             <li><a class="dropdown-item" href="{{ route('waste.index', ['type' => 'out']) }}">Data
                                     Keluar</a></li>
