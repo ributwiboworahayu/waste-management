@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\App;
 
 class WasteTransaction extends Model
 {
@@ -13,14 +15,11 @@ class WasteTransaction extends Model
 
     protected $guarded = [];
 
-    public function liquid(): BelongsTo
+    public function getApprovedAtAttribute(): string
     {
-        return $this->belongsTo(LiquidWaste::class);
-    }
-
-    public function unit(): BelongsTo
-    {
-        return $this->belongsTo(Unit::class);
+        $locale = App::getLocale();
+        return Carbon::parse($this->attributes['approved_at'])->locale($locale)
+            ->translatedFormat('d F Y H:i');
     }
 
     public function detail(): BelongsTo

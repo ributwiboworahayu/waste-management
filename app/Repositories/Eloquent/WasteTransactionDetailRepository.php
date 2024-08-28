@@ -24,6 +24,7 @@ class WasteTransactionDetailRepository extends Eloquent implements WasteTransact
     public function store(array $data)
     {
         return $this->model->create([
+            'unit_id' => $data['unit_id'],
             'unit_conversion_id' => $data['unit_conversion_id'],
             'liquid_waste_id' => $data['liquid_waste_id'],
             'quantity' => $data['quantity'],

@@ -192,6 +192,11 @@
             const liquidWaste = $('#liquid_waste')
             const unit = $('#unit')
 
+            // select a type from query param
+            const type = new URLSearchParams(window.location.search).get('type')
+            if (type) $('#type').val(type).trigger('change')
+            
+
             // load unit from ajax when liquid waste selected
             liquidWaste.on('select2:select', function (e) {
                 const selectedLiquidWaste = e.params.data

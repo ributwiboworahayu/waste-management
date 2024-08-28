@@ -85,7 +85,6 @@ class WasteService extends Service
         $liquidWaste = $this->liquidRepositoryInterface->find($payload['liquid_waste_id']);
         if (!$liquidWaste) return ['error' => true, 'message' => 'Liquid waste not found'];
 
-
         $conversionValue = null;
         // check unit if same with liquid waste unit
         if ($payload['unit_id'] != $liquidWaste->unit_id) {
@@ -119,6 +118,7 @@ class WasteService extends Service
             $payload['photoPath'] = $storeImage['data'];
             $payload['documentPath'] = $storeDocument['data'];
             $detailPayload = [
+                'unit_id' => $payload['unit_id'],
                 'unit_conversion_id' => $unitConversions->id ?? null,
                 'liquid_waste_id' => $payload['liquid_waste_id'],
                 'quantity' => $payload['quantity'],
