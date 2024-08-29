@@ -32,19 +32,19 @@
                         @if (old('liquids'))
                             @foreach (old('liquids') as $index => $liquid)
                                 <div class="liquid-group row mb-3" data-index="{{ $index }}">
-                                    <div class="col-auto">
+                                    <div class="col-md-3">
                                         <label for="codeName_{{ $index }}" class="form-label">Kode</label>
                                         <input type="text" class="form-control" id="codeName_{{ $index }}"
                                                name="liquids[{{ $index }}][codeName]" value="{{ $liquid['codeName'] }}"
                                                placeholder="K01.." required>
                                     </div>
-                                    <div class="col-auto">
+                                    <div class="col-md-3">
                                         <label for="name_{{ $index }}" class="form-label">Nama</label>
                                         <input type="text" class="form-control" id="name_{{ $index }}"
                                                name="liquids[{{ $index }}][name]" value="{{ $liquid['name'] }}"
                                                placeholder="Nama" required>
                                     </div>
-                                    <div class="col-auto">
+                                    <div class="col-md-3">
                                         <label for="unitName_{{ $index }}" class="form-label">Satuan</label>
                                         <select class="form-select select2" id="unitName_{{ $index }}"
                                                 name="liquids[{{ $index }}][unitName]" data-placeholder="Pilih Satuan"
@@ -69,18 +69,18 @@
                             @endforeach
                         @else
                             <div class="liquid-group row mb-3">
-                                <div class="col-2">
+                                <div class="col-md-2">
                                     <label for="codeName_0" class="form-label">Kode</label>
                                     <input type="text" class="form-control" id="codeName_0" name="liquids[0][codeName]"
                                            placeholder="K01.." required>
                                 </div>
-                                <div class="col-2">
+                                <div class="col-md-2">
                                     <label for="name_0" class="form-label">Nama</label>
                                     <input type="text" class="form-control" id="name_0" name="liquids[0][name]"
                                            placeholder="Nama"
                                            required>
                                 </div>
-                                <div class="col-2">
+                                <div class="col-md-2">
                                     <label for="unitName_0" class="form-label">Satuan</label>
                                     <select class="form-select select2" id="unitName_0" name="liquids[0][unitName]"
                                             data-placeholder="Pilih Satuan" required>
@@ -128,17 +128,17 @@
             $('#addLiquidButton').on('click', function () {
                 const liquidGroup = `
                     <div class="liquid-group row mb-3" data-index="${liquidIndex}">
-                        <div class="col-2">
+                        <div class="col-md-2">
                             <label for="codeName_${liquidIndex}" class="form-label">Kode</label>
                             <input type="text" class="form-control" id="codeName_${liquidIndex}" name="liquids[${liquidIndex}][codeName]"
                                    placeholder="K0${liquidIndex + 1}.." required>
                         </div>
-                        <div class="col-2">
+                        <div class="col-md-2">
                             <label for="name_${liquidIndex}" class="form-label">Nama</label>
                             <input type="text" class="form-control" id="name_${liquidIndex}" name="liquids[${liquidIndex}][name]"
                                    placeholder="Nama" required>
                         </div>
-                        <div class="col-2">
+                        <div class="col-md-2">
                             <label for="unitName_${liquidIndex}" class="form-label">Satuan</label>
                             <select class="form-select select2" id="unitName_${liquidIndex}" name="liquids[${liquidIndex}][unitName]"
                                     data-placeholder="Pilih Satuan" required>
