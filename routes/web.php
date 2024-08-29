@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth')->group(function () {
     Route::get('/', function () {
         return redirect('dashboard');
-    });
+    })->name('index');
 
     Route::get('dashboard', function () {
         return view('dashboard');

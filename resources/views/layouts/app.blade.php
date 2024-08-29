@@ -23,8 +23,8 @@
     @stack('custom-css') <!-- Custom CSS Stack -->
     <style>
         .profile-picture {
-            width: 40px;
-            height: 40px;
+            max-width: 40px;
+            max-height: 40px;
             border-radius: 50%;
             object-fit: cover;
         }
@@ -42,77 +42,82 @@
 @auth
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/">{{ config('app.name') }}</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/">Home</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                           aria-expanded="false">
-                            Data
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('waste.units') }}">Unit (Satuan)</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="{{ route('waste.liquid') }}">Cairan</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                           aria-expanded="false">
-                            Laporan
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('waste.index') }}">Semua Data</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="{{ route('waste.index', ['type' => 'in']) }}">Data
-                                    Masuk</a>
-                            </li>
-                            <li><a class="dropdown-item" href="{{ route('waste.index', ['type' => 'out']) }}">Data
-                                    Keluar</a></li>
-                        </ul>
-                    </li>
-                </ul>
-                <ul class="navbar-nav ms-auto d-flex align-items-center">
-                    <li class="nav-item dropdown">
-                        <a id="navbarDropdown" class="nav-link dropdown-toggle d-flex align-items-center" href="#"
-                           role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img
-                                src="{{ Auth::user()->detail->photo ?? 'https://ui-avatars.com/api/?name=' . Auth::user()->name }}"
-                                alt="{{ Auth::user()->name }}"
-                                class="profile-picture me-2">
-                            {{ Auth::user()->name }}
-                        </a>
-
-                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{{ route('profile') }}">
-                                Profile
+            <a class="navbar-brand" href="{{ route('index') }}">
+                <img
+                    src="https://dhillonmedicalcentre.com/wp-content/uploads/2023/10/cropped-Dhillon-Medical-Centre.png"
+                    alt=""
+                    class="profile-picture me-2">
+                {{ config('app.name') }}
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="{{ route('index') }}">Home</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                               aria-expanded="false">
+                                Data
                             </a>
-                            <hr class="dropdown-divider">
-                            <a class="dropdown-item" href="{{ route('logout') }}"
-                               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                Logout
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ route('waste.units') }}">Unit (Satuan)</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" href="{{ route('waste.liquid') }}">Cairan</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                               aria-expanded="false">
+                                Laporan
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ route('waste.index') }}">Semua Data</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" href="{{ route('waste.index', ['type' => 'in']) }}">Data
+                                        Masuk</a>
+                                </li>
+                                <li><a class="dropdown-item" href="{{ route('waste.index', ['type' => 'out']) }}">Data
+                                        Keluar</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav ms-auto d-flex align-items-center">
+                        <li class="nav-item dropdown">
+                            <a id="navbarDropdown" class="nav-link dropdown-toggle d-flex align-items-center" href="#"
+                               role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <img
+                                    src="{{ Auth::user()->detail->photo ?? 'https://ui-avatars.com/api/?name=' . Auth::user()->name }}"
+                                    alt="{{ Auth::user()->name }}"
+                                    class="profile-picture me-2">
+                                {{ Auth::user()->name }}
                             </a>
 
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                  style="display: none;">
-                                @csrf
-                            </form>
-                        </div>
-                    </li>
-                </ul>
-            </div>
+                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="{{ route('profile') }}">
+                                    Profile
+                                </a>
+                                <hr class="dropdown-divider">
+                                <a class="dropdown-item" href="{{ route('logout') }}"
+                                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    Logout
+                                </a>
+
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                      style="display: none;">
+                                    @csrf
+                                </form>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
         </div>
     </nav>
 @endauth
