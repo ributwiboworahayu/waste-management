@@ -57,7 +57,7 @@ return [
             (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || ($_SERVER['SERVER_PORT'] ?? 80) == 443 ? 'https://' : 'http://') .
             ($_SERVER['HTTP_HOST'] ?? 'localhost') . '/'
         )
-        : env('APP_URL', 'http://localhost'),
+        : env('APP_URL', 'http://localhost/'),
 
     'asset_url' => env('ASSET_URL'),
 
