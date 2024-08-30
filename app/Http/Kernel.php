@@ -23,7 +23,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
         // Middleware to minify CSS
         \Fahlisaputra\Minify\Middleware\MinifyCss::class,
-        // Middleware to minify Javascript
+        // Middleware to minify JavaScript
         \Fahlisaputra\Minify\Middleware\MinifyJavascript::class,
         // Middleware to minify Blade
         \Fahlisaputra\Minify\Middleware\MinifyHtml::class,
