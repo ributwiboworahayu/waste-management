@@ -106,8 +106,7 @@
                                 Profile
                             </a>
                             <hr class="dropdown-divider">
-                            <a class="dropdown-item" href="{{ route('logout') }}"
-                               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            <a class="dropdown-item" href="{{ route('logout') }}" id="logout">
                                 Logout
                             </a>
 
@@ -151,9 +150,25 @@
             placeholder: 'Pilih Satuan',
             width: '100%' // Make sure the Select2 dropdown is full width
         })
+
+        // Logout Confirmation
+        $('#logout').on('click', function (e) {
+            e.preventDefault()
+            Swal.fire({
+                title: 'Logout',
+                text: 'Are you sure you want to logout?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Logout',
+                cancelButtonText: 'No, Cancel',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#logout-form').submit()
+                }
+            })
+        })
     })
 </script>
-
 @stack('custom-js') <!-- Custom JS Stack -->
 </body>
 </html>
