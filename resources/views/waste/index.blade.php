@@ -10,7 +10,7 @@
             </div>
             <div class="card-body">
                 <div class="d-flex justify-content-between mb-3">
-                    <a href="{{ route('waste.create') }}" class="btn btn-primary" id="createNewWaste">Buat Baru</a>
+                    <a href="{{ route('waste.create') }}" class="btn btn-primary" id="createNewWaste">Tambah</a>
                 </div>
                 @if (session('success'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">

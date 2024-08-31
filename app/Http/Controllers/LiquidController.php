@@ -33,6 +33,9 @@ class LiquidController extends Controller
 
     public function create(Request $request)
     {
+        $isAdministrator = $request->isAdministrator;
+        if (!$isAdministrator) return redirect()->route('index')->with('error', 'Anda tidak memiliki akses');
+
         $units = $this->liquidService->getUnits();
         $error = self::unitEmpty($units);
         return view('liquids.create', array_merge($request->query(), compact('units')))
@@ -45,6 +48,9 @@ class LiquidController extends Controller
      */
     public function store(StoreLiquidRequest $request): RedirectResponse
     {
+        $isAdministrator = $request->isAdministrator;
+        if (!$isAdministrator) return redirect()->route('index')->with('error', 'Anda tidak memiliki akses');
+
         $result = $this->liquidService->store($request);
         if ($result['status']) return redirect()->route('waste.liquid', $request->query())
             ->with('success', $result['message']);
@@ -58,6 +64,9 @@ class LiquidController extends Controller
      */
     public function update($id, UpdateLiquidRequest $request): RedirectResponse
     {
+        $isAdministrator = $request->isAdministrator;
+        if (!$isAdministrator) return redirect()->route('index')->with('error', 'Anda tidak memiliki akses');
+
         $data = $request->post();
         try {
             $result = $this->liquidService->update($id, $data);
