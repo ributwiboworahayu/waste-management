@@ -101,7 +101,7 @@
         <div class="login-info">
             <h1 class="h3">Waste Management System</h1>
             <img
-                src="{{ asset('assets/img/logo.png') }}"
+                src="{{ asset('assets/img/logo.jpg') }}"
                 alt="Logo" class="img-thumbnail">
             <p class="mt-3">© {{ now()->year }} Waste Management System. All rights reserved.</p>
         </div>
