@@ -44,7 +44,7 @@
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ route('index') }}">
                 <img
-                    src="https://dhillonmedicalcentre.com/wp-content/uploads/2023/10/cropped-Dhillon-Medical-Centre.png"
+                    src="{{ asset('assets/img/logo.jpg') }}"
                     alt=""
                     class="profile-picture me-2">
                 {{ config('app.name') }}
