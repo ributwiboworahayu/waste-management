@@ -100,8 +100,9 @@
 
         <div class="login-info">
             <h1 class="h3">Waste Management System</h1>
-            <img src="https://dhillonmedicalcentre.com/wp-content/uploads/2023/10/cropped-Dhillon-Medical-Centre.png"
-                 alt="Logo" class="img-thumbnail">
+            <img
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdVBk0blOgyfde3RLVTPOC-At952TTGGGGcyL3oCVZmdsHWpUwgWUov4-uzYAauA7hObc&usqp=CAU"
+                alt="Logo" class="img-thumbnail">
             <p class="mt-3">© {{ now()->year }} Waste Management System. All rights reserved.</p>
         </div>
     </div>
