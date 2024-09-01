@@ -57,7 +57,7 @@ return [
             (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || ($_SERVER['SERVER_PORT'] ?? 80) == 443 ? 'https://' : 'http://') .
             ($_SERVER['HTTP_HOST'] ?? 'localhost') .
             (strpos($_SERVER['REQUEST_URI'] ?? '', '/public') !== false
-                ? substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '/public') + strlen('/public'))
+                ? (substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '/public') + strlen('/public')) . '/')
                 : '/')
         )
         : env('APP_URL', 'http://localhost/'),
