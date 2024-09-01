@@ -72,6 +72,9 @@
                                 </li>
                                 <li><a class="dropdown-item" href="{{ route('waste.liquid') }}">Cairan</a></li>
                             </ul>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ route('user.index') }}">User</a></li>
+                            </ul>
                         </li>
                     @endif
                     <li class="nav-item dropdown">

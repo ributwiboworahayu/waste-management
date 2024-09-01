@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\LiquidController;
 use App\Http\Controllers\UnitController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\WasteController;
 use Illuminate\Support\Facades\Route;
 
@@ -47,6 +48,20 @@ Route::middleware('auth')->group(function () {
     Route::get('settings', function () {
         return view('settings');
     })->name('settings');
+
+    Route::prefix('users')->group(function () {
+        Route::get('/', [UserController::class, 'index'])->name('user.index');
+        Route::get('create', [UserController::class, 'create'])->name('users.create');
+        Route::post('store', [UserController::class, 'store'])->name('users.store');
+        Route::prefix('{id}')->group(function () {
+            Route::get('show', [UserController::class, 'show'])->name('users.show');
+            Route::get('edit', [UserController::class, 'edit'])->name('users.edit');
+        });
+
+        Route::prefix('datatables')->group(function () {
+            Route::get('/', [UserController::class, 'datatables'])->name('users.datatables');
+        });
+    });
 
     Route::prefix('waste')->group(function () {
         Route::get('/', [WasteController::class, 'index'])->name('waste.index');
