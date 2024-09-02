@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ListWasteController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
@@ -22,9 +23,7 @@ Route::middleware('auth')->group(function () {
         return redirect('dashboard');
     })->name('index');
 
-    Route::get('dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('profile', function () {
         return view('profile');
@@ -85,7 +84,7 @@ Route::middleware('auth')->group(function () {
             Route::prefix('datatables')->group(function () {
                 Route::get('/', [ListWasteController::class, 'datatables'])->name('waste.list.datatables');
             });
-            
+
             Route::get('{liquidWaste}', [WasteController::class, 'getUnitByLiquidId'])->name('waste.getUnitByLiquid');
         });
 

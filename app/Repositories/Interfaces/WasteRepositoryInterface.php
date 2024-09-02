@@ -14,5 +14,7 @@ interface WasteRepositoryInterface extends Repository
 
     public function show($id);
 
+    public function getDashboardData(): array;
+
     public function datatableQuery(Request $request);
 }

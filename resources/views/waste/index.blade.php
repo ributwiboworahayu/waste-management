@@ -123,7 +123,7 @@
                         <div class="col-sm-3">
                             <input type="text" class="form-control" id="code" readonly>
                         </div>
-                        <label for="type" class="col-sm-1 col-form-label">Tipe</label>
+                        <label for="type" class="col-sm-1 col-form-label">Jenis Limbah</label>
                         <div class="col-sm-1">
                             <input type="text" class="form-control" id="type" readonly>
                         </div>

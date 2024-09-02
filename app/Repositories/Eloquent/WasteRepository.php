@@ -94,4 +94,14 @@ class WasteRepository extends Eloquent implements WasteRepositoryInterface
             'detail.listWaste',
         ])->find($id);
     }
+
+    public function getDashboardData(): array
+    {
+        return [
+            'dailyTotalLiquid' => 0,
+            'dailyTotalB3' => 0,
+            'totalLiquid' => 100,
+            'totalB3' => 100,
+        ];
+    }
 }
