@@ -123,7 +123,7 @@
                         <div class="col-sm-3">
                             <input type="text" class="form-control" id="code" readonly>
                         </div>
-                        <label for="type" class="col-sm-1 col-form-label">Jenis Limbah</label>
+                        <label for="type" class="col-sm-1 col-form-label">Transaksi</label>
                         <div class="col-sm-1">
                             <input type="text" class="form-control" id="type" readonly>
                         </div>
@@ -265,7 +265,8 @@
                         $.get(url, function (response) {
                             $('#showModal .modal-title').text(`Transaksi ${response.data.code}`)
                             $('#showModal #code').val(response.data.code)
-                            $('#showModal #type').val(response.data.type)
+                            const type = response.data.type === 'in' ? 'Masuk' : 'Keluar'
+                            $('#showModal #type').val(type)
                             $('#showModal #transaction_date').val(response.data.approved_at)
                             $('#showModal #list_name').val(response.data.detail.list_waste.name)
                             $('#showModal #quantity').val(response.data.detail.quantity)

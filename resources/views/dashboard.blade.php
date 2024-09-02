@@ -28,19 +28,19 @@
                                     </div>
                                     <div class="d-flex justify-content-between mb-3">
                                         <p class="mb-0 text-muted">Total Masuk Harian:</p>
-                                        <p class="mb-0 text-danger">{{ $dailyTotalLiquid ?? 0 }}</p>
+                                        <p class="mb-0 text-danger">{{ $data['dailyTotalLiquidIn'] ?? 0 }}</p>
                                     </div>
                                     <div class="d-flex justify-content-between mb-3">
                                         <p class="mb-0 text-muted">Total Keluar Harian:</p>
-                                        <p class="mb-0 text-danger">{{ $dailyTotalLiquid ?? 0 }}</p>
+                                        <p class="mb-0 text-danger">{{ $data['dailyTotalLiquidOut'] ?? 0 }}</p>
                                     </div>
                                     <div class="d-flex justify-content-between mb-3">
                                         <p class="mb-0 text-muted">Total Harian:</p>
-                                        <p class="mb-0 text-danger">{{ $dailyTotalLiquid ?? 0 }}</p>
+                                        <p class="mb-0 text-danger">{{ $data['dailyTotalLiquid'] ?? 0 }}</p>
                                     </div>
                                     <div class="d-flex justify-content-between mb-3">
                                         <p class="mb-0 text-muted">Total Keseluruhan:</p>
-                                        <p class="mb-0 text-danger">{{ $totalLiquid ?? 0 }}</p>
+                                        <p class="mb-0 text-danger">{{ $data['totalLiquid'] ?? 0 }}</p>
                                     </div>
                                     <div>
                                         <ul class="list-group list-group-flush">
@@ -90,19 +90,19 @@
                                     </div>
                                     <div class="d-flex justify-content-between mb-3">
                                         <p class="mb-0 text-muted">Total Masuk Harian:</p>
-                                        <p class="mb-0 text-danger">{{ $dailyTotalB3 ?? 0 }}</p>
+                                        <p class="mb-0 text-danger">{{ $data['dailyTotalB3In'] ?? 0 }}</p>
                                     </div>
                                     <div class="d-flex justify-content-between mb-3">
                                         <p class="mb-0 text-muted">Total Keluar Harian:</p>
-                                        <p class="mb-0 text-danger">{{ $dailyTotalB3 ?? 0 }}</p>
+                                        <p class="mb-0 text-danger">{{ $data['dailyTotalB3Out'] ?? 0 }}</p>
                                     </div>
                                     <div class="d-flex justify-content-between mb-3">
                                         <p class="mb-0 text-muted">Total Harian:</p>
-                                        <p class="mb-0 text-danger">{{ $dailyTotalB3 ?? 0 }}</p>
+                                        <p class="mb-0 text-danger">{{ $data['dailyTotalB3'] ?? 0 }}</p>
                                     </div>
                                     <div class="d-flex justify-content-between mb-3">
                                         <p class="mb-0 text-muted">Total Keseluruhan:</p>
-                                        <p class="mb-0 text-danger">{{ $totalB3 ?? 0 }}</p>
+                                        <p class="mb-0 text-danger">{{ $data['totalB3'] ?? 0 }}</p>
                                     </div>
                                     <div>
                                         <ul class="list-group list-group-flush">

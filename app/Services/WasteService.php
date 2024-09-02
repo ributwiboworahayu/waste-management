@@ -69,9 +69,9 @@ class WasteService extends Service
     public function generateCode(): string
     {
         $lastCode = $this->mainInterface->getLastCode();
-        $lastNumber = (int)substr($lastCode, -4);
+        $lastNumber = (int)substr($lastCode, -6);
         $newNumber = $lastNumber + 1;
-        return 'WST' . str_pad($newNumber, 4, '0', STR_PAD_LEFT);
+        return 'WST' . str_pad($newNumber, 6, '0', STR_PAD_LEFT);
     }
 
     public function store($payload): array
