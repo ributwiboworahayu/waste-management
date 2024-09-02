@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLiquidWastesTable extends Migration
+class CreateListWastesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class CreateLiquidWastesTable extends Migration
      */
     public function up()
     {
-        Schema::create('liquid_wastes', function (Blueprint $table) {
+        Schema::create('list_wastes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('unit_id')->constrained('units');
             $table->string('code')->unique();
+            $table->boolean('is_b3')->default(false);
             $table->string('name');
             $table->float('quantity')->default(0);
             $table->string('description')->nullable();
@@ -32,6 +33,6 @@ class CreateLiquidWastesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('liquid_wastes');
+        Schema::dropIfExists('list_wastes');
     }
 }

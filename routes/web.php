@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\LiquidController;
+use App\Http\Controllers\ListWasteController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WasteController;
@@ -50,7 +50,7 @@ Route::middleware('auth')->group(function () {
     })->name('settings');
 
     Route::prefix('users')->group(function () {
-        Route::get('/', [UserController::class, 'index'])->name('user.index');
+        Route::get('/', [UserController::class, 'index'])->name('users.index');
         Route::get('create', [UserController::class, 'create'])->name('users.create');
         Route::post('store', [UserController::class, 'store'])->name('users.store');
         Route::prefix('{id}')->group(function () {
@@ -76,17 +76,17 @@ Route::middleware('auth')->group(function () {
             Route::get('/', [WasteController::class, 'datatables'])->name('waste.datatables');
         });
 
-        Route::prefix('liquid')->group(function () {
-            Route::get('/', [LiquidController::class, 'liquid'])->name('waste.liquid');
-            Route::get('create', [LiquidController::class, 'create'])->name('waste.liquid.create');
-            Route::post('store', [LiquidController::class, 'store'])->name('waste.liquid.store');
-            Route::put('{id}', [LiquidController::class, 'update'])->name('waste.liquid.update');
-            Route::delete('{id}', [LiquidController::class, 'delete'])->name('waste.liquid.delete');
-            Route::get('{liquidWaste}/units', [WasteController::class, 'getUnitByLiquidId'])->name('waste.get-unit-by-liquid');
-
+        Route::prefix('waste-list')->group(function () {
+            Route::get('/', [ListWasteController::class, 'liquid'])->name('waste.list');
+            Route::get('create', [ListWasteController::class, 'create'])->name('waste.list.create');
+            Route::post('store', [ListWasteController::class, 'store'])->name('waste.list.store');
+            Route::put('{id}', [ListWasteController::class, 'update'])->name('waste.list.update');
+            Route::delete('{id}', [ListWasteController::class, 'delete'])->name('waste.list.delete');
             Route::prefix('datatables')->group(function () {
-                Route::get('/', [LiquidController::class, 'datatables'])->name('waste.liquid.datatables');
+                Route::get('/', [ListWasteController::class, 'datatables'])->name('waste.list.datatables');
             });
+            
+            Route::get('{liquidWaste}', [WasteController::class, 'getUnitByLiquidId'])->name('waste.getUnitByLiquid');
         });
 
         Route::prefix('units')->group(function () {

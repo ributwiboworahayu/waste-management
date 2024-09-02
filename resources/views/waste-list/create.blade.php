@@ -6,12 +6,12 @@
     <div class="container mt-3">
         <div class="card">
             <div class="card-header">
-                Tambah Cairan
+                Tambah {{ request()->query('waste') === 'b3' ? 'Bahan Berbahaya dan Beracun (B3)' : 'Limbah Cair' }}
             </div>
             <div class="card-body">
                 @if($error)
                     <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        <li>{!! $error !!}</li>
+                        <span>{!! $error !!}</span>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
@@ -26,28 +26,29 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
-                <form id="liquidsForm" action="{{ route('waste.liquid.store', ['page' => $page ?? 1]) }}" method="POST">
+                <form id="listsForm" action="{{ route('waste.list.store', request()->query()) }}" method="post">
                     @csrf
-                    <div id="liquidsContainer">
-                        @if (old('liquids'))
-                            @foreach (old('liquids') as $index => $liquid)
+                    <div id="listsContainer">
+                        @if (old('lists'))
+                            @foreach (old('lists') as $index => $liquid)
                                 <div class="liquid-group row mb-3" data-index="{{ $index }}">
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <label for="codeName_{{ $index }}" class="form-label">Kode</label>
-                                        <input type="text" class="form-control" id="codeName_{{ $index }}"
-                                               name="liquids[{{ $index }}][codeName]" value="{{ $liquid['codeName'] }}"
+                                        <input type="text" class="form-control bg-secondary-subtle"
+                                               id="codeName_{{ $index }}"
+                                               name="lists[{{ $index }}][codeName]" value="{{ $liquid['codeName'] }}"
                                                placeholder="K01.." required>
                                     </div>
                                     <div class="col-md-3">
                                         <label for="name_{{ $index }}" class="form-label">Nama</label>
                                         <input type="text" class="form-control" id="name_{{ $index }}"
-                                               name="liquids[{{ $index }}][name]" value="{{ $liquid['name'] }}"
+                                               name="lists[{{ $index }}][name]" value="{{ $liquid['name'] }}"
                                                placeholder="Nama" required>
                                     </div>
                                     <div class="col-md-3">
                                         <label for="unitName_{{ $index }}" class="form-label">Satuan</label>
                                         <select class="form-select select2" id="unitName_{{ $index }}"
-                                                name="liquids[{{ $index }}][unitName]" data-placeholder="Pilih Satuan"
+                                                name="lists[{{ $index }}][unitName]" data-placeholder="Pilih Satuan"
                                                 required>
                                             <option></option>
                                             @foreach ($units as $unit)
@@ -61,7 +62,7 @@
                                     <div class="col-md-4">
                                         <label for="description_{{ $index }}" class="form-label">Deskripsi</label>
                                         <input type="text" class="form-control" id="description_{{ $index }}"
-                                               name="liquids[{{ $index }}][description]"
+                                               name="lists[{{ $index }}][description]"
                                                value="{{ $liquid['description'] }}"
                                                placeholder="Deskripsi">
                                     </div>
@@ -71,18 +72,19 @@
                             <div class="liquid-group row mb-3">
                                 <div class="col-md-2">
                                     <label for="codeName_0" class="form-label">Kode</label>
-                                    <input type="text" class="form-control" id="codeName_0" name="liquids[0][codeName]"
-                                           placeholder="K01.." required>
+                                    <input type="text" class="form-control bg-secondary-subtle" id="codeName_0"
+                                           name="lists[0][codeName]"
+                                           placeholder="K01.." required value="{{ $codeName }}">
                                 </div>
                                 <div class="col-md-2">
                                     <label for="name_0" class="form-label">Nama</label>
-                                    <input type="text" class="form-control" id="name_0" name="liquids[0][name]"
-                                           placeholder="Nama"
+                                    <input type="text" class="form-control" id="name_0" name="lists[0][name]"
+                                           placeholder="Nama" autofocus
                                            required>
                                 </div>
                                 <div class="col-md-2">
                                     <label for="unitName_0" class="form-label">Satuan</label>
-                                    <select class="form-select select2" id="unitName_0" name="liquids[0][unitName]"
+                                    <select class="form-select select2" id="unitName_0" name="lists[0][unitName]"
                                             data-placeholder="Pilih Satuan" required>
                                         <option></option>
                                         @foreach ($units as $unit)
@@ -93,7 +95,7 @@
                                 <div class="col-md-4">
                                     <label for="description_0" class="form-label">Deskripsi</label>
                                     <input type="text" class="form-control" id="description_0"
-                                           name="liquids[0][description]"
+                                           name="lists[0][description]"
                                            placeholder="Deskripsi">
                                 </div>
                             </div>
@@ -110,7 +112,7 @@
                         </div>
                         <div>
                             <button type="submit" class="btn btn-primary mx-1">Simpan</button>
-                            <a href="{{ route('waste.liquid', ['page' => $page ?? 1]) }}" class="btn btn-secondary">Kembali</a>
+                            <a href="{{ back()->getTargetUrl() }}" class="btn btn-secondary mx-1">Batal</a>
                         </div>
                     </div>
                 </form>
@@ -122,25 +124,33 @@
 @push('custom-js')
     <script>
         $(document).ready(function () {
-            let liquidIndex = $('#liquidsContainer .liquid-group').length
+            let liquidIndex = $('#listsContainer .liquid-group').length
             const unitOptions = @json($units);
 
             $('#addLiquidButton').on('click', function () {
+                // prefix code from first val of codeName
+                let codeName = $('#listsContainer .liquid-group:first input[id^=codeName]').val()
+                const padLength = codeName.length - 2
+                const codeNamePrefix = codeName.substring(0, 2)
+                // last codenum from last val of codeName eg. LQ001 -> 001
+                const codeNum = parseInt(codeName.substring(2))
+                // make codename increment eg. LQ001 -> LQ002
+                codeName = codeNamePrefix + (codeNum + liquidIndex).toString().padStart(padLength, '0')
                 const liquidGroup = `
                     <div class="liquid-group row mb-3" data-index="${liquidIndex}">
                         <div class="col-md-2">
                             <label for="codeName_${liquidIndex}" class="form-label">Kode</label>
-                            <input type="text" class="form-control" id="codeName_${liquidIndex}" name="liquids[${liquidIndex}][codeName]"
-                                   placeholder="K0${liquidIndex + 1}.." required>
+                            <input type="text" class="form-control bg-secondary-subtle" id="codeName_${liquidIndex}" name="lists[${liquidIndex}][codeName]"
+                                   placeholder="K01.." required value="${codeName}">
                         </div>
                         <div class="col-md-2">
                             <label for="name_${liquidIndex}" class="form-label">Nama</label>
-                            <input type="text" class="form-control" id="name_${liquidIndex}" name="liquids[${liquidIndex}][name]"
+                            <input type="text" class="form-control" id="name_${liquidIndex}" name="lists[${liquidIndex}][name]"
                                    placeholder="Nama" required>
                         </div>
                         <div class="col-md-2">
                             <label for="unitName_${liquidIndex}" class="form-label">Satuan</label>
-                            <select class="form-select select2" id="unitName_${liquidIndex}" name="liquids[${liquidIndex}][unitName]"
+                            <select class="form-select select2" id="unitName_${liquidIndex}" name="lists[${liquidIndex}][unitName]"
                                     data-placeholder="Pilih Satuan" required>
                                 <option></option>
                                 ${unitOptions.map(unit => `<option value="${unit.id}">${unit.name}</option>`).join('')}
@@ -148,13 +158,13 @@
                         </div>
                         <div class="col-md-4">
                             <label for="description_${liquidIndex}" class="form-label">Deskripsi</label>
-                            <input type="text" class="form-control" id="description_${liquidIndex}" name="liquids[${liquidIndex}][description]"
+                            <input type="text" class="form-control" id="description_${liquidIndex}" name="lists[${liquidIndex}][description]"
                                    placeholder="Deskripsi">
                         </div>
                     </div>
                 `
 
-                $('#liquidsContainer').append(liquidGroup)
+                $('#listsContainer').append(liquidGroup)
                 $('#removeLiquidButton').prop('disabled', false)
 
                 // Initialize Select2 for new elements
@@ -170,7 +180,7 @@
 
             const removeLiquidButton = $('#removeLiquidButton')
             removeLiquidButton.on('click', function () {
-                const liquidGroup = $('#liquidsContainer .liquid-group')
+                const liquidGroup = $('#listsContainer .liquid-group')
                 if (liquidGroup.length > 1) {
                     liquidGroup.last().remove()
                     if (liquidGroup.length <= 2) {
@@ -183,7 +193,7 @@
             removeLiquidButton.attr('disabled', true)
 
             // auto capitalize codeName
-            $('#liquidsForm').on('input', 'input[id^=codeName]', function () {
+            $('#listsForm').on('input', 'input[id^=codeName]', function () {
                 this.value = this.value.toUpperCase()
             })
         })

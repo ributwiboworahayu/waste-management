@@ -59,7 +59,7 @@
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="{{ route('index') }}">Home</a>
                     </li>
-                    @if(request()->isAdministrator)
+                    @if(request()->input('isAdministrator'))
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                                aria-expanded="false">
@@ -67,13 +67,13 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="{{ route('waste.units') }}">Unit (Satuan)</a></li>
+                                <li><a class="dropdown-item" href="{{ route('waste.list', ['type' => 'liquid']) }}">Cairan</a>
+                                <li><a class="dropdown-item" href="{{ route('waste.list', ['type' => 'b3']) }}">B3</a>
+                                </li>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
-                                <li><a class="dropdown-item" href="{{ route('waste.liquid') }}">Cairan</a></li>
-                            </ul>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{{ route('user.index') }}">User</a></li>
+                                <li><a class="dropdown-item" href="{{ route('users.index') }}">User</a></li>
                             </ul>
                         </li>
                     @endif
@@ -83,15 +83,19 @@
                             Laporan
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('waste.index') }}">Semua Data</a></li>
+                            <li><a class="dropdown-item" href="{{ route('waste.index') }}">Semua</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="{{ route('waste.index', ['type' => 'in']) }}">Data
-                                    Masuk</a>
+                            <li><a class="dropdown-item" href="{{ route('waste.index', ['waste' => 'liquid']) }}">
+                                    Limbah Cairan
+                                </a>
                             </li>
-                            <li><a class="dropdown-item" href="{{ route('waste.index', ['type' => 'out']) }}">Data
-                                    Keluar</a></li>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('waste.index', ['waste' => 'b3']) }}">
+                                    Limbah B3
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 </ul>

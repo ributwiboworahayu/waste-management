@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\Interfaces\DatatablesRepositoryInterface;
-use App\Repositories\Interfaces\LiquidRepositoryInterface;
+use App\Repositories\Interfaces\ListWasteRepositoryInterface;
 use App\Repositories\Interfaces\UnitRepositoryInterface;
 use App\Traits\QueryExceptionTrait;
 use Exception;
@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use LaravelEasyRepository\Service;
 
-class LiquidService extends Service
+class ListWasteService extends Service
 {
     use QueryExceptionTrait;
 
@@ -21,12 +21,12 @@ class LiquidService extends Service
      * don't change $this→mainInterface variable name
      * because used in extent service class
      */
-    protected LiquidRepositoryInterface $mainInterface;
+    protected ListWasteRepositoryInterface $mainInterface;
     protected DatatablesRepositoryInterface $datatablesRepository;
     protected UnitRepositoryInterface $unitRepository;
 
     public function __construct(
-        LiquidRepositoryInterface     $mainInterface,
+        ListWasteRepositoryInterface  $mainInterface,
         DatatablesRepositoryInterface $datatablesRepository,
         UnitRepositoryInterface       $unitRepository
     )
@@ -46,23 +46,25 @@ class LiquidService extends Service
 
     public function store(Request $request): array
     {
-        $liquids = $request->input('liquids');
+        $lists = $request->input('lists');
+        $isB3 = $request->input('waste') === 'b3';
 
         try {
-            DB::transaction(function () use ($liquids) {
-                foreach ($liquids as $liquid) {
+            DB::transaction(function () use ($lists, $isB3) {
+                foreach ($lists as $list) {
                     $this->mainInterface->create([
-                        'name' => $liquid['name'],
-                        'unit_id' => $liquid['unitName'],
-                        'code' => $liquid['codeName'],
-                        'description' => $liquid['description']
+                        'name' => $list['name'],
+                        'unit_id' => $list['unitName'],
+                        'is_b3' => $isB3,
+                        'code' => $list['codeName'],
+                        'description' => $list['description']
                     ]);
                 }
             });
 
             return [
                 'status' => true,
-                'message' => 'Berhasil menambahkan cairan'
+                'message' => 'Berhasil menambahkan ' . count($lists) . ' data limbah'
             ];
         } catch (QueryException|Exception $e) {
             return self::alreadyExists($e);
@@ -75,8 +77,8 @@ class LiquidService extends Service
         $query = $datatables['query'];
         $columns = $datatables['columns'];
         $actionRoutes = [
-            'edit' => 'waste.liquid.update',
-            'delete' => 'waste.liquid.delete'
+            'edit' => 'waste.list.update',
+            'delete' => 'waste.list.delete'
         ];
 
         return $this->datatablesRepository->applyDatatables(
@@ -86,5 +88,21 @@ class LiquidService extends Service
             $columns,
             $actionRoutes
         );
+    }
+
+    public function generateCode($type): string
+    {
+        $prefix = $type === 'b3' ? 'B3' : 'LQ';
+        $isB3 = $type === 'b3';
+        $latestList = $this->mainInterface->getLatestListByIsB3($isB3);
+
+        if ($latestList) {
+            $latestCode = $latestList->code;
+            $latestNumber = (int)substr($latestCode, -4);
+            $latestNumber++;
+            return $prefix . str_pad($latestNumber, 4, '0', STR_PAD_LEFT);
+        }
+
+        return $prefix . '0001';
     }
 }

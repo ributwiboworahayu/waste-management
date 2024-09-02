@@ -6,21 +6,25 @@
     <div class="container mt-3">
         <div class="card">
             <div class="card-header">
-                Cairan
+                <div class="row justify-content-between">
+                    <div class="col-md-6 mt-2">
+                        <h4 class="font-semibold text-gray-800 leading-tight text-uppercase">
+                            {{ __('Daftar Limbah') }}
+                        </h4>
+                    </div>
+                    <div class="col-auto">
+                        <div class=" d-flex justify-content-between mb-3">
+                            <a href="{{ route('waste.list.create',array_merge(request()->query(), ['waste' => 'liquid'])) }}"
+                               id="addLiquidButton"
+                               class="btn btn-primary">
+                                <i class="bi bi-plus"></i>
+                                Tambah
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="card-body">
-                @if($error)
-                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        <li>{!! $error !!}</li>
-                        <button type="button" id="addLiquidButton" class="btn-close" data-bs-dismiss="alert"
-                                aria-label="Close"></button>
-                    </div>
-                @else
-                    <div class="d-flex justify-content-between mb-3">
-                        <a href="{{ route('waste.liquid.create') }}" id="addLiquidButton"
-                           class="btn btn-primary">Tambah</a>
-                    </div>
-                @endif
                 @if (session('success'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         {{ session('success') }}
@@ -38,6 +42,20 @@
                         </ul>
                     </div>
                 @endif
+
+                <div class="container-fluid">
+                    <div class="mb-3 row">
+                        <label for="type" class="form-label col-md-2">Tipe</label>
+                        <div class="col-md-4">
+                            <select name="type" id="type" class="form-select">
+                                <option value="liquid" {{ request('waste') === 'liquid' ? 'selected' : '' }}>Cairan
+                                </option>
+                                </option>
+                                <option value="b3" {{ request('waste') === 'b3' ? 'selected' : '' }}>B3</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
                 <div class="table-responsive">
                     <table id="liquidTable" class="table table-bordered">
                         <thead>
@@ -121,9 +139,10 @@
                     url: '{{ asset('assets/lang/id/dataTables.json') }}'
                 },
                 ajax: {
-                    url: '{{ route('waste.liquid.datatables') }}',
+                    url: '{{ route('waste.list.datatables') }}',
                     data: function (d) {
                         d.order[0].column--
+                        d.type = $('#type').val()
                     }
                 },
                 columns: [
@@ -152,7 +171,7 @@
                         liquidTable.DataTable().page(page - 1).draw('page')
 
                         // set button add + page
-                        $('#addLiquidButton').attr('href', '{{ route('waste.liquid.create') }}?page=' + page)
+                        $('#addLiquidButton').attr('href', '{{ route('waste.list.create') }}?page=' + page)
                     }
                 }
             })
@@ -164,7 +183,18 @@
                 window.history.replaceState(null, null, `?page=${pageInfo.page + 1}`)
 
                 // set button add + page
-                $('#addLiquidButton').attr('href', '{{ route('waste.liquid.create') }}?page=' + (pageInfo.page + 1))
+                $('#addLiquidButton').attr('href', '{{ route('waste.list.create') }}?page=' + (pageInfo.page + 1))
+            })
+
+            // on change type
+            $('#type').on('change', function () {
+                liquidTable.DataTable().ajax.reload()
+                const queryParams = new URLSearchParams(window.location.search)
+                queryParams.set('type', $(this).val())
+                window.history.replaceState(null, null, `?${queryParams.toString()}`)
+
+                //  button add + type
+                $('#addLiquidButton').attr('href', '{{ route('waste.list.create') }}?' + queryParams.toString())
             })
 
             liquidTable.on('click', '.btn-delete', function (e) {
@@ -233,7 +263,7 @@
                 const unitSelect = $('#editUnit')
                 const unitOptions = unitSelect.find('option')
 
-                // Find the option with text matching the data.unit
+                // Find the option with a text matching the data.unit
                 unitOptions.each(function () {
                     if ($(this).text() === data.unit) {
                         unitSelect.val($(this).val()).trigger('change')

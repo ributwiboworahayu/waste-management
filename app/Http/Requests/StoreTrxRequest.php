@@ -24,14 +24,14 @@ class StoreTrxRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'liquid_waste_id' => 'required|integer',
+            'list_waste_id' => 'required|integer',
             'unit_id' => 'required|integer',
             'code_name' => 'required|string',
             'type' => 'required|in:in,out',
             'quantity' => 'required|numeric|min:0',
             'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'document' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'shipper_name' => 'required|string',
+            'shipper_name' => 'string',
             'input_by' => 'required|string',
             'input_at' => 'required|date',
             'status' => 'required|in:pending,approved,rejected',
@@ -39,33 +39,37 @@ class StoreTrxRequest extends FormRequest
         ];
     }
 
+    // messages in indonesia
     public function messages(): array
     {
         return [
-            'liquid_waste_id.required' => 'Kolom limbah cair wajib diisi',
-            'liquid_waste_id.integer' => 'Kolom limbah cair harus berupa angka',
-            'unit_id.required' => 'Kolom satuan wajib diisi',
-            'unit_id.integer' => 'Kolom satuan harus berupa angka',
-            'code_name.required' => 'Kolom kode wajib diisi',
-            'code_name.string' => 'Kolom kode harus berupa teks',
-            'type.required' => 'Kolom tipe wajib diisi',
-            'type.in' => 'Kolom tipe harus berupa in atau out',
-            'quantity.required' => 'Kolom kuantitas wajib diisi',
-            'quantity.numeric' => 'Kolom kuantitas harus berupa angka',
-            'quantity.min' => 'Kolom kuantitas minimal 0',
-            'photo.required' => 'Kolom foto wajib diisi',
-            'photo.image' => 'Kolom foto harus berupa gambar',
-            'document.required' => 'Kolom dokumen wajib diisi',
-            'document.image' => 'Kolom dokumen harus berupa gambar',
-            'shipper_name.required' => 'Kolom nama pengirim wajib diisi',
-            'shipper_name.string' => 'Kolom nama pengirim harus berupa teks',
-            'status.required' => 'Kolom status wajib diisi',
-            'status.in' => 'Kolom status harus berupa pending, approved, atau rejected',
-            'description.string' => 'Kolom deskripsi harus berupa teks',
-            'input_by.required' => 'Kolom input oleh wajib diisi',
-            'input_by.string' => 'Kolom input oleh harus berupa teks',
-            'input_at.required' => 'Kolom input pada wajib diisi',
-            'input_at.date' => 'Kolom input pada harus berupa tanggal',
+            'list_waste_id.required' => 'Jenis limbah harus diisi',
+            'list_waste_id.integer' => 'Jenis limbah harus berupa angka',
+            'unit_id.required' => 'Satuan harus diisi',
+            'unit_id.integer' => 'Satuan harus berupa angka',
+            'code_name.required' => 'Kode harus diisi',
+            'code_name.string' => 'Kode harus berupa huruf',
+            'type.required' => 'Tipe harus diisi',
+            'type.in' => 'Tipe harus berupa in atau out',
+            'quantity.required' => 'Jumlah harus diisi',
+            'quantity.numeric' => 'Jumlah harus berupa angka',
+            'quantity.min' => 'Jumlah tidak boleh kurang dari 0',
+            'photo.required' => 'Foto harus diisi',
+            'photo.image' => 'Foto harus berupa gambar',
+            'photo.mimes' => 'Foto harus berupa gambar dengan format: jpeg, png, jpg, gif, svg',
+            'photo.max' => 'Foto tidak boleh lebih dari 2MB',
+            'document.required' => 'Dokumen harus diisi',
+            'document.image' => 'Dokumen harus berupa gambar',
+            'document.mimes' => 'Dokumen harus berupa gambar dengan format: jpeg, png, jpg, gif, svg',
+            'document.max' => 'Dokumen tidak boleh lebih dari 2MB',
+            'shipper_name.string' => 'Nama pengirim harus berupa huruf',
+            'input_by.required' => 'Input oleh harus diisi',
+            'input_by.string' => 'Input oleh harus berupa huruf',
+            'input_at.required' => 'Tanggal input harus diisi',
+            'input_at.date' => 'Tanggal input harus berupa tanggal',
+            'status.required' => 'Status harus diisi',
+            'status.in' => 'Status harus berupa pending, approved, atau rejected',
+            'description.string' => 'Deskripsi harus berupa huruf',
         ];
     }
 }

@@ -5,8 +5,8 @@
 @section('content')
     <div class="container mt-3">
         <div class="card">
-            <div class="card-header">
-                Tambah transaksi
+            <div class="card-header text-uppercase">
+                Tambah transaksi {{ request()->query('type') == 'in' ? 'masuk' : 'keluar' }}
             </div>
             <div class="card-body">
                 @if($error ?? false)
@@ -26,21 +26,50 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
+                @if(session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <p>{{ session('success') }}</p>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
                 <form id="liquidsForm" action="{{ route('waste.store', request()->query()) }}" method="POST"
                       enctype="multipart/form-data">
                     @csrf
+                    <div class="mb-3 row">
+                        <div class="col-md-2">
+                            <label for="date" class="form-label">Tipe Transaksi</label>
+                        </div>
+                        <div class="col-md-6">
+                            <select class="form-select bg-secondary-subtle" id="type" name="type" required disabled>
+                                <option disabled {{ old('type') ? '' : 'selected' }}>Pilih Tipe</option>
+                                <option value="in" {{ old('type') == 'in' ? 'selected' : '' }}>Masuk</option>
+                                <option value="out" {{ old('type') == 'out' ? 'selected' : '' }}>Keluar</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <div class="col-md-2">
+                            <label for="codeName" class="form-label">Kode</label>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control bg-secondary-subtle" id="codeName" name="code_name"
+                                   placeholder="Kode" required value="{{ $codeName }}">
+                        </div>
+                    </div>
                     <div class="row mb-3">
                         <div class="col-md-2">
-                            <label for="liquid_waste" class="col-form-label">Cairan limbah</label>
+                            <label for="list_waste"
+                                   class="col-form-label">Limbah {{ request()->query('waste') == 'b3' ? 'B3' : 'Cairan' }}</label>
                         </div>
                         <div class="col-md-3">
-                            <select class="form-select select2" id="liquid_waste" name="liquid_waste_id"
-                                    data-placeholder="Pilih Cairan Limbah" required>
+                            <select class="form-select select2" id="list_waste" name="list_waste_id"
+                                    data-placeholder="Pilih Limbah {{ request()->query('waste') == 'b3' ? 'B3' : 'Cairan' }}"
+                                    required>
                                 <option></option>
-                                @foreach($liquids as $liquid)
+                                @foreach($lists as $list)
                                     <option
-                                        value="{{ $liquid['id'] }}" {{ old('liquid_waste_id') == $liquid['id'] ? 'selected' : '' }}>
-                                        {{ $liquid['text'] }}
+                                        value="{{ $list['id'] }}" {{ old('list_waste_id') == $list['id'] ? 'selected' : '' }}>
+                                        {{ $list['text'] }}
                                     </option>
                                 @endforeach
                             </select>
@@ -57,28 +86,9 @@
                     </div>
                     <div class="mb-3 row">
                         <div class="col-md-2">
-                            <label for="codeName" class="form-label">Kode</label>
-                        </div>
-                        <div class="col-md-3">
-                            <input type="text" class="form-control" id="codeName" name="code_name"
-                                   placeholder="Kode" required value="{{ $codeName ?? '' }}">
-                        </div>
-                        <div class="col-md-1">
-                            <label for="date" class="form-label">Tipe</label>
-                        </div>
-                        <div class="col-md-2">
-                            <select class="form-select" id="type" name="type" required>
-                                <option disabled {{ old('type') ? '' : 'selected' }}>Pilih Tipe</option>
-                                <option value="in" {{ old('type') == 'in' ? 'selected' : '' }}>Masuk</option>
-                                <option value="out" {{ old('type') == 'out' ? 'selected' : '' }}>Keluar</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="mb-3 row">
-                        <div class="col-md-2">
                             <label for="quantity" class="form-label">Jumlah</label>
                         </div>
-                        <div class="col-md-1">
+                        <div class="col-md-2">
                             <input type="text" class="form-control" id="quantity" name="quantity"
                                    placeholder="Jumlah" required value="{{ old('quantity') }}">
                         </div>
@@ -137,33 +147,18 @@
                                    placeholder="Tanggal" required value="{{ old('date') ?? date('Y-m-d') }}">
                         </div>
                     </div>
-                    <div class="mb-3 row">
-                        <div class="col-md-2">
-                            <label for="shipper_name" class="form-label required">Nama Pengangkut</label>
+                    @if(request('waste') === 'b3' && request('type') === 'out')
+                        <div class="mb-3 row">
+                            <div class="col-md-2">
+                                <label for="shipper_name" class="form-label required">Nama Pengangkut</label>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" id="shipper_name" name="shipper_name"
+                                       placeholder="Nama Pengangkut" required value="{{ old('shipper_name') }}">
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <input type="text" class="form-control" id="shipper_name" name="shipper_name"
-                                   placeholder="Nama Pengangkut" required value="{{ old('shipper_name') }}">
-                        </div>
-                    </div>
-                    <div class="mb-3 row">
-                        <div class="col-md-2">
-                            <label for="status" class="form-label">Status</label>
-                        </div>
-                        <div class="col-md-2">
-                            <select class="form-select" id="status" name="status" required>
-                                <option value="pending" {{ old('status') == 'pending' ? 'selected' : '' }}>Pending
-                                </option>
-                                <option
-                                    value="approved" {{ old('status') == 'approved' || !old('status') ? 'selected' : '' }}>
-                                    Accepted
-                                </option>
-                                <option value="rejected" {{ old('status') == 'rejected' ? 'selected' : '' }}>
-                                    Rejected
-                                </option>
-                            </select>
-                        </div>
-                    </div>
+                    @endif
+                    <input type="hidden" name="status" value="approved">
                     <div class="mb-3 row">
                         <div class="col-md-2">
                             <label for="description" class="form-label">Deskripsi</label>
@@ -177,7 +172,7 @@
                     <div class="d-flex justify-content-between mb-3">
                         <div>
                             <button type="submit" class="btn btn-primary mx-1">Simpan</button>
-                            <a href="{{ route('waste.index', request()->query()) }}" class="btn btn-secondary mx-1">Batal</a>
+                            <a href="{{ back()->getTargetUrl() }}" class="btn btn-secondary mx-1">Batal</a>
                         </div>
                     </div>
                 </form>
@@ -189,13 +184,13 @@
 @push('custom-js')
     <script>
         $(document).ready(function () {
-            const liquidWaste = $('#liquid_waste')
+            const liquidWaste = $('#list_waste')
             const unit = $('#unit')
 
             // select a type from query param
             const type = new URLSearchParams(window.location.search).get('type')
             if (type) $('#type').val(type).trigger('change')
-            
+
 
             // load unit from ajax when liquid waste selected
             liquidWaste.on('select2:select', function (e) {
@@ -220,7 +215,7 @@
 
             function updateUnitData(liquidWasteId) {
                 $.ajax({
-                    url: '{{ config('app.url') }}waste/liquid/' + liquidWasteId + '/units',
+                    url: '{{ route('waste.getUnitByLiquid', ($lists[0]['id'] ?? 0)) }}'.replace('{{ ($lists[0]['id'] ?? 0 ) }}', liquidWasteId),
                     type: 'GET',
                     success: function (response) {
                         unit.empty()

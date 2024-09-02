@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTrxRequest;
-use App\Models\LiquidWaste;
+use App\Models\ListWaste;
 use App\Services\WasteService;
 use App\Traits\QueryExceptionTrait;
 use Illuminate\Contracts\Foundation\Application;
@@ -40,13 +40,15 @@ class WasteController extends Controller
     /**
      * @return Application|Factory|View
      */
-    public function create()
+    public function create(Request $request)
     {
         $units = $this->wasteService->getUnits();
-        $liquids = $this->wasteService->getLiquids();
+
+        $waste = $request->input('waste');
+        $lists = $this->wasteService->getLiquids($waste);
         $codeName = $this->wasteService->generateCode();
-        $error = self::unitOrLiquidEmpty($units, $liquids);
-        return view('waste.create', compact(['liquids', 'codeName']))->with('error', $error);
+        $error = self::unitOrLiquidEmpty($units, $lists);
+        return view('waste.create', compact(['lists', 'codeName']))->with('error', $error);
     }
 
     /**
@@ -61,7 +63,7 @@ class WasteController extends Controller
     }
 
     /**
-     * @param LiquidWaste $liquidWaste
+     * @param $id
      * @return JsonResponse
      */
     public function show($id): JsonResponse
@@ -71,10 +73,10 @@ class WasteController extends Controller
     }
 
     /**
-     * @param LiquidWaste $liquidWaste
+     * @param ListWaste $liquidWaste
      * @return JsonResponse
      */
-    public function getUnitByLiquidId(LiquidWaste $liquidWaste): JsonResponse
+    public function getUnitByLiquidId(ListWaste $liquidWaste): JsonResponse
     {
         $result = $this->wasteService->getUnitByLiquid($liquidWaste);
         return response()->json($result);

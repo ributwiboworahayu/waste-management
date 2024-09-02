@@ -25,7 +25,7 @@ class WasteRepository extends Eloquent implements WasteRepositoryInterface
 
     public function getLastCode()
     {
-        return $this->model->latest()->first()->code ?? 'WST0000';
+        return $this->model->withTrashed()->latest()->first()->code ?? 'WST0000';
     }
 
     public function store(array $data)
@@ -53,7 +53,7 @@ class WasteRepository extends Eloquent implements WasteRepositoryInterface
                 'waste_transactions.id',
                 'waste_transactions.code',
                 'type',
-                'lw.name as liquid_name',
+                'lw.name as list_name',
                 'waste_transactions.quantity',
                 'unit.name as unit',
                 'u.name as approved_by',
@@ -61,8 +61,11 @@ class WasteRepository extends Eloquent implements WasteRepositoryInterface
             ])
             ->join('users as u', 'u.id', '=', 'waste_transactions.approved_by')
             ->join('waste_transaction_details as wtd', 'wtd.id', '=', 'waste_transactions.waste_transaction_detail_id')
-            ->join('liquid_wastes as lw', 'lw.id', '=', 'wtd.liquid_waste_id')
+            ->join('list_wastes as lw', 'lw.id', '=', 'wtd.list_waste_id')
             ->join('units as unit', 'unit.id', '=', 'wtd.unit_id')
+            ->when($request->input('waste'), function ($query) use ($request) {
+                return $query->where('is_b3', ($request->input('waste') === 'b3'));
+            })
             ->when($request->input('type'), function ($query) use ($request) {
                 return $query->where('type', $request->input('type'));
             });
@@ -88,7 +91,7 @@ class WasteRepository extends Eloquent implements WasteRepositoryInterface
         return $this->model->with([
             'detail',
             'detail.unit',
-            'detail.liquidWaste'
+            'detail.listWaste',
         ])->find($id);
     }
 }

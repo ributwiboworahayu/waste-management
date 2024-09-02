@@ -28,8 +28,8 @@ class WasteTransactionDetail extends Model
         return $this->belongsTo(Unit::class, 'unit_id');
     }
 
-    public function liquidWaste(): BelongsTo
+    public function listWaste(): BelongsTo
     {
-        return $this->belongsTo(LiquidWaste::class, 'liquid_waste_id');
+        return $this->belongsTo(ListWaste::class, 'list_waste_id');
     }
 }

@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Models\LiquidWaste;
+use App\Models\ListWaste;
 use App\Repositories\Interfaces\DatatablesRepositoryInterface;
-use App\Repositories\Interfaces\LiquidRepositoryInterface;
+use App\Repositories\Interfaces\ListWasteRepositoryInterface;
 use App\Repositories\Interfaces\UnitConversionRepositoryInterface;
 use App\Repositories\Interfaces\UnitRepositoryInterface;
 use App\Repositories\Interfaces\WasteRepositoryInterface;
@@ -27,7 +27,7 @@ class WasteService extends Service
      */
     protected WasteRepositoryInterface $mainInterface;
     protected UnitRepositoryInterface $unitRepositoryInterface;
-    protected LiquidRepositoryInterface $liquidRepositoryInterface;
+    protected ListWasteRepositoryInterface $liquidRepositoryInterface;
     protected UnitConversionRepositoryInterface $unitConversionRepositoryInterface;
     protected WasteTransactionDetailRepositoryInterface $wasteTransactionDetailRepositoryInterface;
     protected DatatablesRepositoryInterface $datatablesRepository;
@@ -35,7 +35,7 @@ class WasteService extends Service
     public function __construct(
         WasteRepositoryInterface                  $mainInterface,
         UnitRepositoryInterface                   $unitRepositoryInterface,
-        LiquidRepositoryInterface                 $liquidRepositoryInterface,
+        ListWasteRepositoryInterface              $liquidRepositoryInterface,
         UnitConversionRepositoryInterface         $unitConversionRepositoryInterface,
         WasteTransactionDetailRepositoryInterface $wasteTransactionDetailRepositoryInterface,
         DatatablesRepositoryInterface             $datatablesRepository
@@ -60,16 +60,10 @@ class WasteService extends Service
         });
     }
 
-    public function getLiquids(): ?Collection
+    public function getLiquids($waste): ?Collection
     {
-        return $this->liquidRepositoryInterface->all()->map(function ($liquid) {
-            return [
-                'id' => $liquid->id,
-                'text' => $liquid->name,
-                'unit' => $liquid->unit->name,
-                'unit_id' => $liquid->unit->id,
-            ];
-        });
+        $isB3 = $waste === 'b3';
+        return $this->liquidRepositoryInterface->listWaste($isB3);
     }
 
     public function generateCode(): string
@@ -82,7 +76,7 @@ class WasteService extends Service
 
     public function store($payload): array
     {
-        $liquidWaste = $this->liquidRepositoryInterface->find($payload['liquid_waste_id']);
+        $liquidWaste = $this->liquidRepositoryInterface->find($payload['list_waste_id']);
         if (!$liquidWaste) return ['error' => true, 'message' => 'Liquid waste not found'];
 
         $conversionValue = null;
@@ -120,7 +114,7 @@ class WasteService extends Service
             $detailPayload = [
                 'unit_id' => $payload['unit_id'],
                 'unit_conversion_id' => $unitConversions->id ?? null,
-                'liquid_waste_id' => $payload['liquid_waste_id'],
+                'list_waste_id' => $payload['list_waste_id'],
                 'quantity' => $payload['quantity'],
                 'conversion_value' => $conversionValue ?? $payload['quantity'],
                 'photo' => $payload['photoPath'] ?? 'sembarang.jpg',
@@ -155,7 +149,7 @@ class WasteService extends Service
         return ['error' => false, 'message' => 'Data berhasil disimpan'];
     }
 
-    public function getUnitByLiquid(LiquidWaste $liquidWaste): array
+    public function getUnitByLiquid(ListWaste $liquidWaste): array
     {
         $unitId = $liquidWaste->unit_id;
         $unitConversions = $this->unitConversionRepositoryInterface->getUnitConversionByFromUnitId($unitId);

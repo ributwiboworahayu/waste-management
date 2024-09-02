@@ -26,7 +26,7 @@ class WasteTransactionDetailRepository extends Eloquent implements WasteTransact
         return $this->model->create([
             'unit_id' => $data['unit_id'],
             'unit_conversion_id' => $data['unit_conversion_id'],
-            'liquid_waste_id' => $data['liquid_waste_id'],
+            'list_waste_id' => $data['list_waste_id'],
             'quantity' => $data['quantity'],
             'conversion_value' => $data['conversion_value'],
             'photo' => $data['photo'],

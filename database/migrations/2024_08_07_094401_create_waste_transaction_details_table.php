@@ -17,12 +17,12 @@ class CreateWasteTransactionDetailsTable extends Migration
             $table->id();
             $table->foreignId('unit_id')->constrained('units');
             $table->foreignId('unit_conversion_id')->nullable()->constrained('unit_conversions')->nullOnDelete();
-            $table->foreignId('liquid_waste_id')->constrained('liquid_wastes');
+            $table->foreignId('list_waste_id')->constrained('list_wastes');
             $table->float('quantity', 16, 8);
             $table->float('conversion_value', 16, 8);
             $table->string('photo');
             $table->string('document')->nullable();
-            $table->string('shipper_name');
+            $table->string('shipper_name')->nullable();
             $table->string('input_by');
             $table->timestamp('input_at');
             $table->text('description')->nullable();

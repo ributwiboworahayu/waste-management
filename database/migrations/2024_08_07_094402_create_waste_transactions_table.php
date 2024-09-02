@@ -21,7 +21,7 @@ class CreateWasteTransactionsTable extends Migration
             $table->enum('type', ['in', 'out'])->comment('in for input, out for output');
             $table->unsignedBigInteger('approved_by')->nullable();
             $table->timestamp('approved_at')->nullable();
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('approved');
             $table->text('description')->nullable();
             $table->timestamps();
             $table->softDeletes();

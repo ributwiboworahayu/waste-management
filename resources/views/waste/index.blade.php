@@ -1,17 +1,33 @@
 @extends('layouts.app')
 
-@section('title', 'Units')
+@section('title', 'Transaksi Limbah')
 
 @section('content')
     <div class="container mt-3">
         <div class="card">
             <div class="card-header">
-                Cairan
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h5 class="card-title">Transaksi Limbah</h5>
+                    </div>
+                    <div class="col-sm-6 d-flex justify-content-end">
+                        <div class="dropdown ms-2">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="newTransaction"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                Tambah Transaksi
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="newTransaction">
+                                <li><a class="dropdown-item"
+                                       href="{{ route('waste.create', array_merge(request()->query(), ['type' => 'in'])) }}">Masuk</a>
+                                <li><a class="dropdown-item"
+                                       href="{{ route('waste.create', array_merge(request()->query(), ['type' => 'out'])) }}">Keluar</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="card-body">
-                <div class="d-flex justify-content-between mb-3">
-                    <a href="{{ route('waste.create') }}" class="btn btn-primary" id="createNewWaste">Tambah</a>
-                </div>
                 @if (session('success'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         {{ session('success') }}
@@ -29,6 +45,46 @@
                         </ul>
                     </div>
                 @endif
+                <div class="mb-3 container-fluid">
+                    <form action="{{ route('waste.index') }}" method="get">
+                        <div class="row mb-2">
+                            <div class="col-sm-2">
+                                <label for="type" class="col-form-label">Tipe Transaksi</label>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="input-group">
+                                    <select name="type" id="type" class="form-select">
+                                        <option value="">Semua</option>
+                                        <option value="in" {{ request('type') == 'in' ? 'selected' : '' }}>Masuk
+                                        </option>
+                                        <option value="out" {{ request('type') == 'out' ? 'selected' : '' }}>Keluar
+                                        </option>
+                                    </select>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-search"></i>
+                                        Filter
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label for="waste" class="col-form-label">Jenis Limbah</label>
+                            </div>
+                            <div class="col-sm-3">
+                                <select name="waste" id="waste_type" class="form-select">
+                                    <option value="">Semua</option>
+                                    <option value="b3" {{ request('waste') == 'b3' ? 'selected' : '' }}>B3
+                                    </option>
+                                    <option
+                                        value="liquid" {{ request('waste') == 'liquid' ? 'selected' : '' }}>
+                                        Cairan
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
                 <div class="table-responsive">
                     <table id="wasteTable" class="table table-bordered">
                         <thead>
@@ -77,9 +133,9 @@
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <label for="liquid_name" class="col-sm-2 col-form-label">Nama Cairan</label>
+                        <label for="list_name" class="col-sm-2 col-form-label">Nama Cairan</label>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control" id="liquid_name" readonly>
+                            <input type="text" class="form-control" id="list_name" readonly>
                         </div>
                         <label for="quantity" class="col-sm-2 col-form-label">Kuantitas</label>
                         <div class="col-sm-2">
@@ -145,13 +201,14 @@
                             data: function (d) {
                                 d.order[0].column--
                                 d.type = '{{ request('type') }}'
+                                d.waste = '{{ request('waste') }}'
                             }
                         },
                         columns: [
                             {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
                             {data: 'code', name: 'code'},
                             {data: 'type', name: 'type'},
-                            {data: 'liquid_name', name: 'liquid_name'},
+                            {data: 'list_name', name: 'list_name'},
                             {data: 'quantity', name: 'quantity'},
                             {data: 'unit', name: 'unit'},
                             {data: 'approved_by', name: 'approved_by'},
@@ -210,7 +267,7 @@
                             $('#showModal #code').val(response.data.code)
                             $('#showModal #type').val(response.data.type)
                             $('#showModal #transaction_date').val(response.data.approved_at)
-                            $('#showModal #liquid_name').val(response.data.detail.liquid_waste.name)
+                            $('#showModal #list_name').val(response.data.detail.list_waste.name)
                             $('#showModal #quantity').val(response.data.detail.quantity)
                             $('#showModal #unit').val(response.data.detail.unit.name)
                             $('#showModal #input_by').val(response.data.detail.input_by)

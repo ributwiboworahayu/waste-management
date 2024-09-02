@@ -21,13 +21,13 @@ class StoreLiquidRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'liquids.*.codeName' => 'required|string|max:255|unique:liquid_wastes,code',
-            'liquids.*.name' => 'required|string|max:255',
-            'liquids.*.unitName' => 'required|int',
-            'liquids.*.description' => 'nullable|string|max:1000',
+            'lists.*.codeName' => 'required|string|max:255|unique:list_wastes,code',
+            'lists.*.name' => 'required|string|max:255',
+            'lists.*.unitName' => 'required|int',
+            'lists.*.description' => 'nullable|string|max:1000',
         ];
     }
 
@@ -35,10 +35,10 @@ class StoreLiquidRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'liquids.*.codeName.required' => 'Kode tidak boleh kosong',
-            'liquids.*.codeName.unique' => 'Ada kode yang sama atau sudah digunakan',
-            'liquids.*.name.required' => 'Nama tidak boleh kosong',
-            'liquids.*.unitName.required' => 'Unit tidak boleh kosong',
+            'lists.*.codeName.required' => 'Kode tidak boleh kosong',
+            'lists.*.codeName.unique' => 'Ada kode yang sama atau sudah digunakan',
+            'lists.*.name.required' => 'Nama tidak boleh kosong',
+            'lists.*.unitName.required' => 'Unit tidak boleh kosong',
         ];
     }
 }
