@@ -18,7 +18,7 @@
                     <div class="card-body">
                         <div class="row mb-4">
                             <!-- Limbah B3 -->
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-4 mb-5">
                                 <div class="card h-100 shadow-sm border-0 rounded-3 bg-light p-3 position-relative">
                                     <div class="d-flex align-items-center mb-3">
                                         <i class="bi bi-droplet-fill fs-3 me-3 text-primary"></i>
@@ -76,7 +76,7 @@
                                 </div>
                             </div>
                             <!-- Limbah B3 Lain -->
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-4 mb-5">
                                 <div class="card h-100 shadow-sm border-0 rounded-3 bg-light p-3 position-relative">
                                     <div class="d-flex align-items-center mb-3">
                                         <i class="bi bi-exclamation-triangle-fill fs-3 me-3 text-danger"></i>
