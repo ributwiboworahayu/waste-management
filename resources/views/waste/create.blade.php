@@ -112,6 +112,7 @@
                         </div>
                         <div class="col-md-4">
                             <input type="file" class="form-control" id="photo" name="photo" accept="image/*"
+                                   capture="environment"
                                    value="{{ old('photo') }}">
                         </div>
                         <div class="col-md-4">
@@ -125,6 +126,7 @@
                         </div>
                         <div class="col-md-4">
                             <input type="file" class="form-control" id="document" name="document" accept="image/*"
+                                   capture="environment"
                                    value="{{ old('document') }}">
                         </div>
                         <div class="col-md-4">
