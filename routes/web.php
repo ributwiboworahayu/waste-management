@@ -24,6 +24,7 @@ Route::middleware('auth')->group(function () {
     })->name('index');
 
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('dashboard/datatables', [DashboardController::class, 'datatables'])->name('dashboard.summary');
 
     Route::get('profile', function () {
         return view('profile');

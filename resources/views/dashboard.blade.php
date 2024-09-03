@@ -16,7 +16,7 @@
                         <p class="mb-0 text-secondary-emphasis">{{ Carbon::now()->isoFormat('dddd, D MMMM Y') }}</p>
                     </div>
                     <div class="card-body">
-                        <div class="row">
+                        <div class="row mb-4">
                             <!-- Limbah B3 -->
                             <div class="col-md-4 mb-3">
                                 <div class="card h-100 shadow-sm border-0 rounded-3 bg-light p-3 position-relative">
@@ -27,20 +27,16 @@
                                         </div>
                                     </div>
                                     <div class="d-flex justify-content-between mb-3">
-                                        <p class="mb-0 text-muted">Total Masuk Harian:</p>
+                                        <p class="mb-0 text-muted">Transaksi Masuk Harian:</p>
                                         <p class="mb-0 text-danger">{{ $data['dailyTotalLiquidIn'] ?? 0 }}</p>
                                     </div>
                                     <div class="d-flex justify-content-between mb-3">
-                                        <p class="mb-0 text-muted">Total Keluar Harian:</p>
+                                        <p class="mb-0 text-muted">Transaksi Keluar Harian:</p>
                                         <p class="mb-0 text-danger">{{ $data['dailyTotalLiquidOut'] ?? 0 }}</p>
                                     </div>
                                     <div class="d-flex justify-content-between mb-3">
-                                        <p class="mb-0 text-muted">Total Harian:</p>
+                                        <p class="mb-0 text-muted">Total Transaksi Harian:</p>
                                         <p class="mb-0 text-danger">{{ $data['dailyTotalLiquid'] ?? 0 }}</p>
-                                    </div>
-                                    <div class="d-flex justify-content-between mb-3">
-                                        <p class="mb-0 text-muted">Total Keseluruhan:</p>
-                                        <p class="mb-0 text-danger">{{ $data['totalLiquid'] ?? 0 }}</p>
                                     </div>
                                     <div>
                                         <ul class="list-group list-group-flush">
@@ -89,20 +85,16 @@
                                         </div>
                                     </div>
                                     <div class="d-flex justify-content-between mb-3">
-                                        <p class="mb-0 text-muted">Total Masuk Harian:</p>
+                                        <p class="mb-0 text-muted">Transaksi Masuk Harian:</p>
                                         <p class="mb-0 text-danger">{{ $data['dailyTotalB3In'] ?? 0 }}</p>
                                     </div>
                                     <div class="d-flex justify-content-between mb-3">
-                                        <p class="mb-0 text-muted">Total Keluar Harian:</p>
+                                        <p class="mb-0 text-muted">Transaksi Keluar Harian:</p>
                                         <p class="mb-0 text-danger">{{ $data['dailyTotalB3Out'] ?? 0 }}</p>
                                     </div>
                                     <div class="d-flex justify-content-between mb-3">
-                                        <p class="mb-0 text-muted">Total Harian:</p>
+                                        <p class="mb-0 text-muted">Total Transaksi Harian:</p>
                                         <p class="mb-0 text-danger">{{ $data['dailyTotalB3'] ?? 0 }}</p>
-                                    </div>
-                                    <div class="d-flex justify-content-between mb-3">
-                                        <p class="mb-0 text-muted">Total Keseluruhan:</p>
-                                        <p class="mb-0 text-danger">{{ $data['totalB3'] ?? 0 }}</p>
                                     </div>
                                     <div>
                                         <ul class="list-group list-group-flush">
@@ -143,12 +135,114 @@
                             </div>
                             <!-- ... more cards here -->
                         </div>
+                        <div class="card">
+                            <h5 class="card-header">Summary</h5>
+                            <div class="card-body">
+                                <h6 class="card-title mt-4 text-center">Limbah Cairan</h6>
+                                <hr class="border border-dark-subtle opacity-25">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover" id="liquid-waste-table">
+                                        <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Nama</th>
+                                            <th>Input Hari Ini</th>
+                                            <th>Output Hari Ini</th>
+                                            <th>Total Hari Ini</th>
+                                            <th>Total</th>
+                                            <th>Satuan</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <!-- data will be filled here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <hr class="border mt-4 border-dark opacity-25">
+                                <h6 class="card-title mt-4 text-center">Limbah B3</h6>
+                                <hr class="border border-dark-subtle opacity-25">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover" id="b3-waste-table">
+                                        <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Nama</th>
+                                            <th>Input Hari Ini</th>
+                                            <th>Output Hari Ini</th>
+                                            <th>Total Hari Ini</th>
+                                            <th>Total</th>
+                                            <th>Satuan</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <!-- data will be filled here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 @endsection
+
+@push('custom-js')
+    <script>
+        $(document).ready(function () {
+            const liquidWaste = $('#liquid-waste-table')
+            liquidWaste.DataTable({
+                processing: true,
+                serverSide: true,
+                language: {
+                    url: '{{ asset('assets/lang/id/dataTables.json') }}'
+                },
+                ajax: {
+                    url: '{{ route('dashboard.summary', ['waste' => 'liquid']) }}',
+                    type: 'GET',
+                    data: function (d) {
+                        d.order[0].column--
+                    }
+                },
+                columns: [
+                    {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                    {data: 'name', name: 'name'},
+                    {data: 'daily_in', name: 'daily_in'},
+                    {data: 'daily_out', name: 'daily_out'},
+                    {data: 'daily_total', name: 'daily_total'},
+                    {data: 'total', name: 'total'},
+                    {data: 'unit', name: 'unit'}
+                ],
+            })
+
+            const b3Waste = $('#b3-waste-table')
+            b3Waste.DataTable({
+                processing: true,
+                serverSide: true,
+                language: {
+                    url: '{{ asset('assets/lang/id/dataTables.json') }}'
+                },
+                ajax: {
+                    url: '{{ route('dashboard.summary', ['waste' => 'b3']) }}',
+                    type: 'GET',
+                    data: function (d) {
+                        d.order[0].column--
+                    }
+                },
+                columns: [
+                    {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                    {data: 'name', name: 'name'},
+                    {data: 'daily_in', name: 'daily_in'},
+                    {data: 'daily_out', name: 'daily_out'},
+                    {data: 'daily_total', name: 'daily_total'},
+                    {data: 'total', name: 'total'},
+                    {data: 'unit', name: 'unit'}
+                ],
+            })
+        })
+    </script>
+@endpush
 
 @push('custom-css')
     <style>

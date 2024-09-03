@@ -83,13 +83,12 @@
                             Laporan
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('waste.index') }}">Semua</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
                             <li><a class="dropdown-item" href="{{ route('waste.index', ['waste' => 'liquid']) }}">
                                     Limbah Cairan
                                 </a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
                             </li>
                             <li>
                                 <a class="dropdown-item" href="{{ route('waste.index', ['waste' => 'b3']) }}">

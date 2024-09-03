@@ -5,8 +5,10 @@ namespace App\Repositories\Eloquent;
 use App\Models\ListWaste;
 use App\Models\WasteTransaction;
 use App\Repositories\Interfaces\WasteRepositoryInterface;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use LaravelEasyRepository\Implementations\Eloquent;
 
 class WasteRepository extends Eloquent implements WasteRepositoryInterface
@@ -99,35 +101,75 @@ class WasteRepository extends Eloquent implements WasteRepositoryInterface
     public function getDashboardData(): array
     {
         $result = WasteTransaction::selectRaw("
-            COALESCE(SUM(CASE WHEN list_wastes.is_b3 = TRUE AND waste_transactions.type = 'in' THEN waste_transaction_details.conversion_value ELSE 0 END), 0) AS total_b3_daily_in,
-            COALESCE(SUM(CASE WHEN list_wastes.is_b3 = TRUE AND waste_transactions.type = 'out' THEN waste_transaction_details.conversion_value ELSE 0 END), 0) AS total_b3_daily_out,
-            COALESCE(SUM(CASE WHEN list_wastes.is_b3 = TRUE AND waste_transactions.type = 'in' THEN waste_transaction_details.conversion_value ELSE 0 END), 0) -
-            COALESCE(SUM(CASE WHEN list_wastes.is_b3 = TRUE AND waste_transactions.type = 'out' THEN waste_transaction_details.conversion_value ELSE 0 END), 0) AS total_b3_daily,
+            COALESCE(COUNT(CASE WHEN list_wastes.is_b3 = TRUE AND waste_transactions.type = 'in' THEN 1 END), 0) AS total_b3_daily_in,
+            COALESCE(COUNT(CASE WHEN list_wastes.is_b3 = TRUE AND waste_transactions.type = 'out' THEN 1 END), 0) AS total_b3_daily_out,
+            COALESCE(COUNT(CASE WHEN list_wastes.is_b3 = TRUE THEN 1 END), 0) AS total_b3_daily,
 
-            COALESCE(SUM(CASE WHEN list_wastes.is_b3 = FALSE AND waste_transactions.type = 'in' THEN waste_transaction_details.conversion_value ELSE 0 END), 0) AS total_liquid_daily_in,
-            COALESCE(SUM(CASE WHEN list_wastes.is_b3 = FALSE AND waste_transactions.type = 'out' THEN waste_transaction_details.conversion_value ELSE 0 END), 0) AS total_liquid_daily_out,
-            COALESCE(SUM(CASE WHEN list_wastes.is_b3 = FALSE AND waste_transactions.type = 'in' THEN waste_transaction_details.conversion_value ELSE 0 END), 0) -
-            COALESCE(SUM(CASE WHEN list_wastes.is_b3 = FALSE AND waste_transactions.type = 'out' THEN waste_transaction_details.conversion_value ELSE 0 END), 0) AS total_liquid_daily
-        ")
+            COALESCE(COUNT(CASE WHEN list_wastes.is_b3 = FALSE AND waste_transactions.type = 'in' THEN 1 END), 0) AS total_liquid_daily_in,
+            COALESCE(COUNT(CASE WHEN list_wastes.is_b3 = FALSE AND waste_transactions.type = 'out' THEN 1 END), 0) AS total_liquid_daily_out,
+            COALESCE(COUNT(CASE WHEN list_wastes.is_b3 = FALSE THEN 1 END), 0) AS total_liquid_daily
+            ")
             ->join('waste_transaction_details', 'waste_transaction_details.id', '=', 'waste_transactions.waste_transaction_detail_id')
             ->join('list_wastes', 'list_wastes.id', '=', 'waste_transaction_details.list_waste_id')
-            ->where('waste_transactions.approved_at', '>=', '2024-09-02')
+            ->where('waste_transactions.approved_at', '>=', Carbon::today())
             ->first();
 
-        $totalSum = ListWaste::selectRaw("
-            COALESCE(SUM(CASE WHEN is_b3 = TRUE THEN quantity ELSE 0 END), 0) AS total_b3,
-            COALESCE(SUM(CASE WHEN is_b3 = FALSE THEN quantity ELSE 0 END), 0) AS total_liquid
-        ")->first();
 
         return [
-            'dailyTotalLiquidIn' => number_format($result->total_liquid_daily_in, 2, ',', '.'),
-            'dailyTotalLiquidOut' => number_format($result->total_liquid_daily_out, 2, ',', '.'),
-            'dailyTotalLiquid' => number_format($result->total_liquid_daily, 2, ',', '.'),
-            'dailyTotalB3In' => number_format($result->total_b3_daily_in, 2, ',', '.'),
-            'dailyTotalB3Out' => number_format($result->total_b3_daily_out, 2, ',', '.'),
-            'dailyTotalB3' => number_format($result->total_b3_daily, 2, ',', '.'),
-            'totalLiquid' => number_format($totalSum->total_liquid, 2, ',', '.'),
-            'totalB3' => number_format($totalSum->total_b3, 2, ',', '.'),
+            'dailyTotalLiquidIn' => number_format($result->total_liquid_daily_in),
+            'dailyTotalLiquidOut' => number_format($result->total_liquid_daily_out),
+            'dailyTotalLiquid' => number_format($result->total_liquid_daily),
+            'dailyTotalB3In' => number_format($result->total_b3_daily_in),
+            'dailyTotalB3Out' => number_format($result->total_b3_daily_out),
+            'dailyTotalB3' => number_format($result->total_b3_daily),
+        ];
+    }
+
+    public function summaryQuery(Request $request): array
+    {
+        $query = ListWaste::select([
+            'list_wastes.id',
+            'list_wastes.name',
+            DB::raw("COALESCE(SUM(CASE WHEN waste_transactions.type = 'in' THEN waste_transaction_details.conversion_value ELSE 0 END), 0) as daily_in"),
+            DB::raw("COALESCE(SUM(CASE WHEN waste_transactions.type = 'out' THEN waste_transaction_details.conversion_value ELSE 0 END), 0) as daily_out"),
+            DB::raw("COALESCE(SUM(CASE WHEN waste_transactions.type = 'in' THEN waste_transaction_details.conversion_value ELSE 0 END), 0) - COALESCE(SUM(CASE WHEN waste_transactions.type = 'out' THEN waste_transaction_details.conversion_value ELSE 0 END), 0) as daily_total"),
+            'list_wastes.quantity as total',
+            'units.name as unit'
+        ])->leftJoin('waste_transaction_details', function ($join) {
+            $join->on('waste_transaction_details.list_waste_id', '=', 'list_wastes.id')
+                ->join('waste_transactions', 'waste_transactions.waste_transaction_detail_id', '=', 'waste_transaction_details.id')
+                ->where('waste_transactions.approved_at', '>=', Carbon::today());
+        })->leftJoin('units', 'units.id', '=', 'list_wastes.unit_id')
+            ->when($request->input('waste'), function ($query) use ($request) {
+                return $query->where('list_wastes.is_b3', ($request->input('waste') === 'b3'));
+            });
+
+        $groups = [
+            'list_wastes.id',
+            'list_wastes.name',
+            'list_wastes.quantity',
+            'units.name'
+        ];
+
+        $columns = [
+            'list_wastes.name',
+            'daily_in',
+            'daily_out',
+            'daily_total',
+            'list_wastes.quantity',
+            'unit.name'
+        ];
+
+        $searchValue = $request->input('search')['value'] ?? 0;
+        $havingRaw = "COALESCE(SUM(CASE WHEN waste_transactions.type = 'in' THEN waste_transaction_details.conversion_value ELSE 0 END), 0) = " . $searchValue .
+            " OR COALESCE(SUM(CASE WHEN waste_transactions.type = 'out' THEN waste_transaction_details.conversion_value ELSE 0 END), 0) = " . $searchValue .
+            " OR COALESCE(SUM(CASE WHEN waste_transactions.type = 'in' THEN waste_transaction_details.conversion_value ELSE 0 END), 0) - COALESCE(SUM(CASE WHEN waste_transactions.type = 'out' THEN waste_transaction_details.conversion_value ELSE 0 END), 0) = " . $searchValue;
+
+        return [
+            'query' => $query,
+            'columns' => $columns,
+            'groupBy' => $groups,
+            'havingRaw' => $havingRaw
         ];
     }
 }

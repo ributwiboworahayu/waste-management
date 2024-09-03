@@ -68,6 +68,7 @@ class DatatablesRepository extends Eloquent implements DatatablesRepositoryInter
             // for purpose debug, if any query error it will show
             if (config('app.debug')) {
                 $query2 = clone $cloneQuery;
+                if (!empty($groupBy)) $query2->groupBy($groupBy);
                 $query2->get();
             }
 
