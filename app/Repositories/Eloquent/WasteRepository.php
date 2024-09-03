@@ -65,7 +65,7 @@ class WasteRepository extends Eloquent implements WasteRepositoryInterface
             ->join('users as u', 'u.id', '=', 'waste_transactions.approved_by')
             ->join('waste_transaction_details as wtd', 'wtd.id', '=', 'waste_transactions.waste_transaction_detail_id')
             ->join('list_wastes as lw', 'lw.id', '=', 'wtd.list_waste_id')
-            ->join('units as unit', 'units.id', '=', 'wtd.unit_id')
+            ->join('units', 'units.id', '=', 'wtd.unit_id')
             ->when($request->input('waste'), function ($query) use ($request) {
                 return $query->where('is_b3', ($request->input('waste') === 'b3'));
             })
