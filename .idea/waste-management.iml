@@ -131,5 +131,6 @@
     <orderEntry type="library" name="bootstrap" level="application" />
     <orderEntry type="library" name="select2-bootstrap-5-theme" level="application" />
     <orderEntry type="library" name="jquery" level="application" />
+    <orderEntry type="library" name="compress-js" level="application" />
   </component>
 </module>

@@ -193,6 +193,7 @@
         $(document).ready(function () {
             const liquidWaste = $('#liquid-waste-table')
             liquidWaste.DataTable({
+                lengthMenu: [5, 10, 25, 50, 100],
                 processing: true,
                 serverSide: true,
                 language: {
@@ -218,6 +219,7 @@
 
             const b3Waste = $('#b3-waste-table')
             b3Waste.DataTable({
+                lengthMenu: [5, 10, 25, 50, 100],
                 processing: true,
                 serverSide: true,
                 language: {

@@ -185,6 +185,63 @@
 
 @push('custom-js')
     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const photoInput = document.getElementById('photo')
+            const documentInput = document.getElementById('document')
+
+            function resizeImage(file, maxWidth, maxHeight, callback) {
+                const reader = new FileReader()
+
+                reader.onload = function (e) {
+                    const img = new Image()
+                    img.onload = function () {
+                        const canvas = document.createElement('canvas')
+                        const ctx = canvas.getContext('2d')
+
+                        let width = img.width
+                        let height = img.height
+
+                        if (width > maxWidth) {
+                            height *= maxWidth / width
+                            width = maxWidth
+                        }
+
+                        if (height > maxHeight) {
+                            width *= maxHeight / height
+                            height = maxHeight
+                        }
+
+                        canvas.width = width
+                        canvas.height = height
+
+                        ctx.drawImage(img, 0, 0, width, height)
+
+                        canvas.toBlob(callback, 'image/jpeg')
+                    }
+                    img.src = e.target.result
+                }
+
+                reader.readAsDataURL(file)
+            }
+
+            function handleFileChange(event) {
+                const file = event.target.files[0]
+                if (!file) return
+
+                resizeImage(file, 800, 800, function (blob) {
+                    const newFile = new File([blob], file.name, {type: 'image/jpeg'})
+                    const dataTransfer = new DataTransfer()
+                    dataTransfer.items.add(newFile)
+                    event.target.files = dataTransfer.files
+                })
+            }
+
+            photoInput.addEventListener('change', handleFileChange)
+            documentInput.addEventListener('change', handleFileChange)
+        })
+    </script>
+
+    <script>
         $(document).ready(function () {
             const liquidWaste = $('#list_waste')
             const unit = $('#unit')
