@@ -67,8 +67,8 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="{{ route('waste.units') }}">Unit (Satuan)</a></li>
-                                <li><a class="dropdown-item" href="{{ route('waste.list', ['type' => 'liquid']) }}">Cairan</a>
-                                <li><a class="dropdown-item" href="{{ route('waste.list', ['type' => 'b3']) }}">B3</a>
+                                <li><a class="dropdown-item" href="{{ route('waste.list', ['waste' => 'liquid']) }}">Cairan</a>
+                                <li><a class="dropdown-item" href="{{ route('waste.list', ['waste' => 'b3']) }}">B3</a>
                                 </li>
                                 <li>
                                     <hr class="dropdown-divider">
