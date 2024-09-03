@@ -146,11 +146,12 @@
                                         <tr>
                                             <th>No</th>
                                             <th>Nama</th>
+                                            <th>Tgl.Transaksi</th>
                                             <th>Input Hari Ini</th>
                                             <th>Output Hari Ini</th>
-                                            <th>Total Hari Ini</th>
                                             <th>Total</th>
                                             <th>Satuan</th>
+                                            <th>Input Oleh</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -167,11 +168,12 @@
                                         <tr>
                                             <th>No</th>
                                             <th>Nama</th>
+                                            <th>Tgl.Transaksi</th>
                                             <th>Input Hari Ini</th>
                                             <th>Output Hari Ini</th>
-                                            <th>Total Hari Ini</th>
                                             <th>Total</th>
                                             <th>Satuan</th>
+                                            <th>Input Oleh</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -191,8 +193,15 @@
 @push('custom-js')
     <script>
         $(document).ready(function () {
+            const formatter = new Intl.DateTimeFormat('id-ID', {
+                year: 'numeric',
+                month: 'long',
+                day: '2-digit'
+            })
+
             const liquidWaste = $('#liquid-waste-table')
             liquidWaste.DataTable({
+                searching: false,
                 lengthMenu: [5, 10, 25, 50, 100],
                 processing: true,
                 serverSide: true,
@@ -207,18 +216,46 @@
                     }
                 },
                 columns: [
-                    {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                    {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
                     {data: 'name', name: 'name'},
-                    {data: 'daily_in', name: 'daily_in'},
-                    {data: 'daily_out', name: 'daily_out'},
-                    {data: 'daily_total', name: 'daily_total'},
-                    {data: 'total', name: 'total'},
-                    {data: 'unit', name: 'unit'}
+                    {
+                        data: 'trx_date', name: 'trx_date',
+                        render: function (data) {
+                            const date = new Date(data)
+                            return formatter.format(new Date(date))
+                        }
+                    },
+                    {
+                        data: 'daily_in', name:
+                            'daily_in'
+                    }
+                    ,
+                    {
+                        data: 'daily_out', name:
+                            'daily_out'
+                    }
+                    ,
+                    {
+                        data: 'total', name:
+                            'total'
+                    }
+                    ,
+                    {
+                        data: 'unit', name:
+                            'unit'
+                    }
+                    ,
+                    {
+                        data: 'input_by', name:
+                            'input_by'
+                    }
+                    ,
                 ],
             })
 
             const b3Waste = $('#b3-waste-table')
             b3Waste.DataTable({
+                searching: false,
                 lengthMenu: [5, 10, 25, 50, 100],
                 processing: true,
                 serverSide: true,
@@ -233,13 +270,20 @@
                     }
                 },
                 columns: [
-                    {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                    {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
                     {data: 'name', name: 'name'},
+                    {
+                        data: 'trx_date', name: 'trx_date',
+                        render: function (data) {
+                            const date = new Date(data)
+                            return formatter.format(new Date(date))
+                        }
+                    },
                     {data: 'daily_in', name: 'daily_in'},
                     {data: 'daily_out', name: 'daily_out'},
-                    {data: 'daily_total', name: 'daily_total'},
                     {data: 'total', name: 'total'},
-                    {data: 'unit', name: 'unit'}
+                    {data: 'unit', name: 'unit'},
+                    {data: 'input_by', name: 'input_by'},
                 ],
             })
         })

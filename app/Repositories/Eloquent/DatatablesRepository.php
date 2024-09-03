@@ -70,6 +70,10 @@ class DatatablesRepository extends Eloquent implements DatatablesRepositoryInter
                 $query2 = clone $cloneQuery;
                 if (!empty($groupBy)) $query2->groupBy($groupBy);
                 $query2->get();
+
+                $query2 = clone $query;
+                if (!empty($groupBy)) $query2->groupBy($groupBy);
+                $query2->get();
             }
 
             // Total records

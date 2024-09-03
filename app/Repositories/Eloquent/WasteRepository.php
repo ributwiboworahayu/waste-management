@@ -58,14 +58,14 @@ class WasteRepository extends Eloquent implements WasteRepositoryInterface
                 'type',
                 'lw.name as list_name',
                 'waste_transactions.quantity',
-                'unit.name as unit',
+                'units.name as unit',
                 'u.name as approved_by',
                 'approved_at as approved_date',
             ])
             ->join('users as u', 'u.id', '=', 'waste_transactions.approved_by')
             ->join('waste_transaction_details as wtd', 'wtd.id', '=', 'waste_transactions.waste_transaction_detail_id')
             ->join('list_wastes as lw', 'lw.id', '=', 'wtd.list_waste_id')
-            ->join('units as unit', 'unit.id', '=', 'wtd.unit_id')
+            ->join('units as unit', 'units.id', '=', 'wtd.unit_id')
             ->when($request->input('waste'), function ($query) use ($request) {
                 return $query->where('is_b3', ($request->input('waste') === 'b3'));
             })
@@ -78,7 +78,7 @@ class WasteRepository extends Eloquent implements WasteRepositoryInterface
             'waste_transactions.type',
             'lw.name',
             'waste_transactions.quantity',
-            'unit.name',
+            'units.name',
             'u.name',
             'waste_transactions.approved_at',
         ];
@@ -130,11 +130,17 @@ class WasteRepository extends Eloquent implements WasteRepositoryInterface
         $query = ListWaste::select([
             'list_wastes.id',
             'list_wastes.name',
+            DB::raw("(SELECT MAX(waste_transactions.approved_at) FROM waste_transactions
+                  JOIN waste_transaction_details ON waste_transactions.waste_transaction_detail_id = waste_transaction_details.id
+                  WHERE waste_transaction_details.list_waste_id = list_wastes.id) as trx_date"),
             DB::raw("COALESCE(SUM(CASE WHEN waste_transactions.type = 'in' THEN waste_transaction_details.conversion_value ELSE 0 END), 0) as daily_in"),
             DB::raw("COALESCE(SUM(CASE WHEN waste_transactions.type = 'out' THEN waste_transaction_details.conversion_value ELSE 0 END), 0) as daily_out"),
-            DB::raw("COALESCE(SUM(CASE WHEN waste_transactions.type = 'in' THEN waste_transaction_details.conversion_value ELSE 0 END), 0) - COALESCE(SUM(CASE WHEN waste_transactions.type = 'out' THEN waste_transaction_details.conversion_value ELSE 0 END), 0) as daily_total"),
             'list_wastes.quantity as total',
-            'units.name as unit'
+            'units.name as unit',
+            DB::raw("(SELECT waste_transaction_details.input_by FROM waste_transactions
+                  JOIN waste_transaction_details ON waste_transactions.waste_transaction_detail_id = waste_transaction_details.id
+                  WHERE waste_transaction_details.list_waste_id = list_wastes.id
+                  ORDER BY waste_transactions.approved_at DESC LIMIT 1) as input_by")
         ])->leftJoin('waste_transaction_details', function ($join) {
             $join->on('waste_transaction_details.list_waste_id', '=', 'list_wastes.id')
                 ->join('waste_transactions', 'waste_transactions.waste_transaction_detail_id', '=', 'waste_transaction_details.id')
@@ -153,17 +159,26 @@ class WasteRepository extends Eloquent implements WasteRepositoryInterface
 
         $columns = [
             'list_wastes.name',
+            'trx_date',
             'daily_in',
             'daily_out',
-            'daily_total',
             'list_wastes.quantity',
-            'unit.name'
+            'units.name',
+            'input_by'
         ];
 
         $searchValue = $request->input('search')['value'] ?? 0;
-        $havingRaw = "COALESCE(SUM(CASE WHEN waste_transactions.type = 'in' THEN waste_transaction_details.conversion_value ELSE 0 END), 0) = " . $searchValue .
-            " OR COALESCE(SUM(CASE WHEN waste_transactions.type = 'out' THEN waste_transaction_details.conversion_value ELSE 0 END), 0) = " . $searchValue .
-            " OR COALESCE(SUM(CASE WHEN waste_transactions.type = 'in' THEN waste_transaction_details.conversion_value ELSE 0 END), 0) - COALESCE(SUM(CASE WHEN waste_transactions.type = 'out' THEN waste_transaction_details.conversion_value ELSE 0 END), 0) = " . $searchValue;
+        $numberSearch = is_numeric($searchValue) ? $searchValue : 0;
+        $dateSearch = Carbon::canBeCreatedFromFormat($searchValue, 'd F Y') ? Carbon::createFromFormat('d F Y', $searchValue)->format('Y-m-d') : '2000-01-01';
+        $havingRaw = "COALESCE(SUM(CASE WHEN waste_transactions.type = 'in' THEN waste_transaction_details.conversion_value ELSE 0 END), 0) = $numberSearch" .
+            " OR COALESCE(SUM(CASE WHEN waste_transactions.type = 'out' THEN waste_transaction_details.conversion_value ELSE 0 END), 0) = $numberSearch" .
+            " OR (SELECT waste_transaction_details.input_by FROM waste_transactions
+                  JOIN waste_transaction_details ON waste_transactions.waste_transaction_detail_id = waste_transaction_details.id
+                  WHERE waste_transaction_details.list_waste_id = list_wastes.id
+                  ORDER BY waste_transactions.approved_at DESC LIMIT 1) = '$searchValue'" .
+            " OR (SELECT MAX(waste_transactions.approved_at) FROM waste_transactions
+                  JOIN waste_transaction_details ON waste_transactions.waste_transaction_detail_id = waste_transaction_details.id
+                  WHERE waste_transaction_details.list_waste_id = list_wastes.id) = '$dateSearch'";
 
         return [
             'query' => $query,
