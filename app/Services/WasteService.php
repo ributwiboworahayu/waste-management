@@ -259,6 +259,8 @@ class WasteService extends Service
         // make input by is lower case and replace space with underscore
         $inputBy = str_replace(' ', '_', strtolower($inputBy));
 
+        if (strlen($shipperName) == 0) $shipperName = 'local';
+
         return $inputBy . '-' . $shipperName . '-' . Carbon::now()->format('YmdHis');
     }
 }
