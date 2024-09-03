@@ -138,7 +138,7 @@
                         <div class="card">
                             <h5 class="card-header">Summary</h5>
                             <div class="card-body">
-                                <h6 class="card-title mt-4 text-center">Limbah Cairan</h6>
+                                <h6 class="card-title mt-4 text-center">Limbah Cair</h6>
                                 <hr class="border border-dark-subtle opacity-25">
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-hover" id="liquid-waste-table">
