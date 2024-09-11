@@ -103,4 +103,8 @@ Route::middleware('auth')->group(function () {
     });
 });
 
+Route::get('print', function () {
+    return view('print');
+})->name('print');
+
 require __DIR__ . '/auth.php';
